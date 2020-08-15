@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
-<loc>http://localhost:4000/blog/2020/08/09/a-new-blog.html</loc>
-<lastmod>2020-08-09T21:31:12-07:00</lastmod>
+<loc>https://blog.ditsing.com/%E5%B7%A5%E4%BD%9C/2020/08/15/%E6%96%87%E5%8C%96%E4%B8%8D%E9%80%82.html</loc>
+<lastmod>2020-08-15T06:24:00-07:00</lastmod>
 </url>
 <url>
-<loc>http://localhost:4000/about/</loc>
+<loc>https://blog.ditsing.com/about/</loc>
 </url>
 <url>
-<loc>http://localhost:4000/</loc>
+<loc>https://blog.ditsing.com/</loc>
 </url>
 </urlset>
