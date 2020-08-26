@@ -36,6 +36,7 @@ plugins:
   - jekyll-include-cache
 keep_files: ['CNAME', '.git']
 excerpt_separator: <!--more-->
+destination: _build
 
 # Exclude from processing.
 # The following items will not be processed, by default.
