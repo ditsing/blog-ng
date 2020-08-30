@@ -66,3 +66,20 @@ author:
   name: "杨靖"
   avatar:
   email: ditsing [at] gmail.com
+
+# Comments
+repository  : "ditsing/blog-ng"
+comments:
+  provider  : "staticman_v2"
+  staticman:
+    branch    : "master"
+    endpoint  : https://staticman-ditsing-blog-ng.herokuapp.com/v3/entry/github/
+
+defaults:
+  # _posts
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: single
+      comments: true

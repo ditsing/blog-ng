@@ -1,5 +1,5 @@
 ---
-layout: posts
+layout: single
 title: "Raft, from an engineering perspective"
 date: 2020-08-16 09:33 -0700
 ---
