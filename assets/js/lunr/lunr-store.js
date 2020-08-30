@@ -4,4 +4,10 @@ var store = [{
         "tags": ["人到中年"],
         "url": "https://blog.ditsing.com/%E5%B7%A5%E4%BD%9C/2020/08/15/%E6%96%87%E5%8C%96%E4%B8%8D%E9%80%82.html",
         "teaser": null
+      },{
+        "title": "Raft, from an engineering perspective",
+        "excerpt":"I recently completed an implementation of the Raft consensus algorithm! It is part of the homework of the online version of MIT course 6.824. It took me 10 months on and off, mostly off. The algorithm itself is simple and understandable, as promised by the paper. I’d like to summarize...","categories": [],
+        "tags": [],
+        "url": "https://blog.ditsing.com/2020/08/16/raft-from-an-engineering-perspective.html",
+        "teaser": null
       }]
