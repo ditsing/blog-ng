@@ -61,7 +61,7 @@ The aggressive backtrack behavior is mainly designed for the limits set by the t
 
 `AppendEntries` RPC are so important that they must also be monitored by a timer. In some RPC libraries, an RPC can fail with a timeout error, and the timeout can be set by the caller. Unfortunately `labrpc.go` that comes with 6.824 does not provide such a nice feature. I implemented the timer as part of the Heartbeat component, which checks the status of log sync before sending out heartbeats. If logs are not in sync, `tryAppendEntries` RPCs are triggered instead of heartbeats.
 
-Like heartbeats, each peer should have its own 'daemon' goroutine that is in charge of log syncing. The heartbeat daemon could share the same goroutine with the heartbeats. However I did not find a way to wait for both a ticking timer and an event channel at the same time. Let me know if you know how to do that! Another thing is that my obsolete "all peers bundled together" system worked good enough. I did not bother to upgrade.
+Like heartbeats, each peer should have its own 'daemon' goroutine that is in charge of log syncing. The heartbeat daemon could share the same goroutine with it. However I did not find a way to wait for both a ticking timer and an event channel at the same time. Let me know if you know how to do that! Another thing is that my obsolete "all peers bundled together" system worked good enough. I did not bother to upgrade.
 
 ## Internal RPC Serving
 
