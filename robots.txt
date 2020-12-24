@@ -1,1 +1,4 @@
-Sitemap: https://blog.ditsing.com/sitemap.xml
+User-agent: *
+Sitemap: http://raspberrypi.local/sitemap.xml
+Disallow: /ghost/
+Disallow: /p/
