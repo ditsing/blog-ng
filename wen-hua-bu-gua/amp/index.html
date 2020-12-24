@@ -3,28 +3,29 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
 
-    <title>Implementing Raft with Go</title>
+    <title>文化不适</title>
 
     <link rel="canonical" href="../index.html">
     <meta name="referrer" content="no-referrer-when-downgrade">
     
     <meta property="og:site_name" content="顿">
     <meta property="og:type" content="article">
-    <meta property="og:title" content="Implementing Raft with Go">
-    <meta property="og:description" content="Following my previous post Summary of Implementing Raft in Go, I gathered some thoughts on related topics. Latency and RPCsLatency matters in a distributed systemLatency is tied directly to availability. The larger the latency, the longer the period the system is unavailable. RPC latency compounds quickly when multiple rounds of">
-    <meta property="og:url" content="http://raspberrypi.local/implementing-raft-with-go/">
-    <meta property="article:published_time" content="2020-08-23T07:47:00.000Z">
-    <meta property="article:modified_time" content="2020-12-24T17:26:58.000Z">
-    <meta property="article:tag" content="Raft">
+    <meta property="og:title" content="文化不适">
+    <meta property="og:description" content="标题是从 Culture Fit 生硬翻译过来的。">
+    <meta property="og:url" content="http://raspberrypi.local/wen-hua-bu-gua/">
+    <meta property="article:published_time" content="2020-08-15T15:45:00.000Z">
+    <meta property="article:modified_time" content="2020-12-24T17:27:54.000Z">
+    <meta property="article:tag" content="工作">
+    <meta property="article:tag" content="中文">
     
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Implementing Raft with Go">
-    <meta name="twitter:description" content="Following my previous post Summary of Implementing Raft in Go, I gathered some thoughts on related topics. Latency and RPCsLatency matters in a distributed systemLatency is tied directly to availability. The larger the latency, the longer the period the system is unavailable. RPC latency compounds quickly when multiple rounds of">
-    <meta name="twitter:url" content="http://raspberrypi.local/implementing-raft-with-go/">
+    <meta name="twitter:title" content="文化不适">
+    <meta name="twitter:description" content="标题是从 Culture Fit 生硬翻译过来的。">
+    <meta name="twitter:url" content="http://raspberrypi.local/wen-hua-bu-gua/">
     <meta name="twitter:label1" content="Written by">
     <meta name="twitter:data1" content="Jing Yang 杨靖">
     <meta name="twitter:label2" content="Filed under">
-    <meta name="twitter:data2" content="Raft">
+    <meta name="twitter:data2" content="工作, 中文">
     <meta name="twitter:site" content="@dytsing">
     
     <script type="application/ld+json">
@@ -46,12 +47,12 @@
         "url": "http://raspberrypi.local/author/ditsing/",
         "sameAs": []
     },
-    "headline": "Implementing Raft with Go",
-    "url": "http://raspberrypi.local/implementing-raft-with-go/",
-    "datePublished": "2020-08-23T07:47:00.000Z",
-    "dateModified": "2020-12-24T17:26:58.000Z",
-    "keywords": "Raft",
-    "description": "Following my previous post Summary of Implementing Raft in Go\n[/raft-from-an-engineering-perspective/], I gathered some thoughts on related\ntopics.\n\nLatency and RPCs\nLatency matters in a distributed system\nLatency is tied directly to availability. The larger the latency, the longer the\nperiod the system is unavailable. RPC latency compounds quickly when multiple\nrounds of RPCs are needed, i.e. during a log entry disagreement. In Raft,\nlatency is mostly caused by the network. A lock (mutex, spinl",
+    "headline": "文化不适",
+    "url": "http://raspberrypi.local/wen-hua-bu-gua/",
+    "datePublished": "2020-08-15T15:45:00.000Z",
+    "dateModified": "2020-12-24T17:27:54.000Z",
+    "keywords": "工作, 中文",
+    "description": "标题是从 Culture Fit 生硬翻译过来的。",
     "mainEntityOfPage": {
         "@type": "WebPage",
         "@id": "http://raspberrypi.local/"
@@ -639,20 +640,15 @@
         <article class="post">
 
             <header class="post-header">
-                <h1 class="post-title">Implementing Raft with Go</h1>
+                <h1 class="post-title">文化不适</h1>
                 <section class="post-meta">
                     Jing Yang 杨靖 -
-                    <time class="post-date" datetime="2020-08-23">23 Aug 2020</time>
+                    <time class="post-date" datetime="2020-08-15">15 Aug 2020</time>
                 </section>
             </header>
             <section class="post-content">
 
-                <p>Following my previous post <a href="../../raft-from-an-engineering-perspective/">Summary of Implementing Raft in Go</a>, I gathered some thoughts on related topics.</p><h2 id="latency-and-rpcs">Latency and RPCs</h2><h3 id="latency-matters-in-a-distributed-system">Latency matters in a distributed system</h3><p>Latency is tied directly to availability. The larger the latency, the longer the period the system is unavailable. RPC latency compounds quickly when multiple rounds of RPCs are needed, i.e. during a log entry disagreement. In Raft, latency is mostly caused by the network. A lock (mutex, spinlock etc.) usually adds <a href="https://news.ycombinator.com/item?id=21956314">less than 5ms of latency</a>, whereas an RPC could be <a href="https://www.yonego.com/nl/why-milliseconds-matter/">a couple of times as slow</a>. Ironically, we can run hundreds of thousands of instructions in that time on most consumer CPUs today. There is a big price to pay to run distributed systems.</p><h3 id="channels-and-latency">Channels and latency</h3><p>Go channels can be a drag in a latency-sensitive environment. The sending party usually goes into sleep immediately after putting a message into a channel. The receiving end, on the other hand, may not be awoken immediately.</p><p>I noticed this pattern when counting election votes. I have a goroutine watching the RPC response of <code>RequestVote</code>. It sends a "please count this vote" message to another goroutine after receiving the RPC response. What often happens is that the first goroutine would print "I received a vote", but the corresponding "I counted this vote" message never shows up before the next election starts. The scheduling behavior is a bit mysterious to me. In contrast, the cause and effect is much more clear and direct when I use a condition variable.</p><h3 id="rpcs-must-be-retried">RPCs must be retried</h3><p>RPC failures can be common when the network is unstable. Retrying RPCs helps mitigate the risk of staying unavailable longer than necessary.</p><p>The downside of RPC retries is that if everybody is retrying with high frequency, a lot of network bandwidth will be wasted on sending the same RPCs over and over again. The solution is <a href="https://en.wikipedia.org/wiki/Exponential_backoff">exponential backoff</a>. The first retry should be <code>n</code> ms after an RPC failure, the second retry should be <code>2n</code> ms after that, then <code>4n</code> and so on. The wait time grows quickly, thus only a linear amount of RPC (<code>2/n</code>) would be sent in a unit of time.</p><p>Another down side of retries is the "stay down" situation. When an RPC server is down, the RPCs ought to be processed during that time will be withheld by clients. When the server is up again, a huge amount of retries arrive at the exact same time. That could easily overwhelm the RPC server's buffer, and cause it to die again. The solution is to add a randomized component to exponential backoff. That way RPCs will arrive at slightly different times, allowing some processing time. Together the technique is called randomized exponential backoff, and is proven to be effective.</p><h3 id="no-unnecessary-rpcs">No unnecessary RPCs</h3><p>The other extreme of handling RPCs is sending as many of them as possible. This is obviously bad, especially when the network is congested already. I once tried to make the leader send one heartbeat immediately after another, to minimize new elections when heartbeats are dropped by the network. It turns out even a software simulated network has its bandwidth limit. The leader ended up not being able to do anything other than sending heartbeats.</p><p>Another experiment I did was worse. In my implementation, the leader starts syncing logs whenever a new entry is created by clients. Accidentally I made it backtrack (i.e. sending another RPC with more logs) when the RPC timeouts, and at the same time retry the original RPC as well. The number of RPCs blowed up exponentially, because one failed RPC causes two being sent. The goroutine resource was quickly exhausted when a few new entries were added at the same time. That is, I reached the maximum number of goroutines that can be created. I have since reverted to retrying in an RPC failure, and backtracking only when the recipient disagrees.</p><h2 id="condition-variables">Condition Variables</h2><h3 id="mutexes-and-condition-variables-are-handy">Mutexes and condition variables are handy</h3><p>Mutex is a well known concept. Though I have never heard of condition variables before, at least not in the form that comes with Go. A condition variable is like a semaphore, in the sense that you can wait and signal on it (<a href="https://en.wikipedia.org/wiki/Semaphore_%28programming%29">PV Primitives</a>. The difference (among others) is that after a signal is received, a condition variable automatically acquires the lock associated with it. Acquiring the lock is both convenient, and a requirement for correctness. The reasoning is that the condition can only be safely evaluated while holding the lock, so that the data underneath the condition is protected.</p><p>When implementing Raft, there are many places where we need to wait on a condition. Once that condition is met, we need to acquire the global lock that guards core states. Condition variables fit perfectly into this type of usage.</p><h3 id="but-sometimes-i-only-need-a-semaphore-">But sometimes I only need a semaphore ...</h3><p>There is one case where I don't need the locking part of a condition variable: the election. After sending out requests to vote, the election goroutine will block until one of the following things happen</p><ol><li>Enough votes for me are collected,</li><li>Enough votes against me are collected,</li><li>Someone has started a new election, or</li><li>We are being shut down.</li></ol><p>Those four things can be easily implemented with atomic integer counters. We do not need to acquire the global lock to access or modify those counters. What I really need is a semaphore that works on a goroutine.</p><p>It can be argued that <strong>after</strong> one of those things happen, we might need to acquire the global lock, if we are elected. That is true. Depending on the network environment, being elected may or may not be the dominating result of an election. The line is a bit blurry.</p><p>I ended up creating a lock just for the election. The lock is also used to guarantee there is only one election running, which is a nice side effect.</p><h3 id="signa-is-not-always-required"><code>Signa()</code> is not always required?</h3><p>It appears that <strong>in some systems other than Go</strong>, condition variables can unblock without anyone calling <code>Signal()</code>. The <a href="https://golang.org/pkg/sync/#Cond.Wait">doc of <code>Wait()</code></a> says</p><blockquote>Unlike in other systems, Wait cannot return unless awoken by Broadcast or Signal.</blockquote><p>I'm wondering why that is. In those systems, extra caution should be taken before an awoken goroutine makes any moves.</p><h2 id="critical-sections">Critical Sections</h2><p>Critical sections are the code between acquiring a lock and releasing it. No lock should be held for too long, for obvious reasons. The code within critical sections thus must be short.</p><p>When implementing Raft, it is rather easy to keep it short. The most complex thing that requires holding the global lock is copying an entire array of log entries. Other than that, the only thing left is copying integers in core states. Occasionally goroutines are created while holding the lock, which is not ideal. I’m just too lazy to optimize it away.</p><h3 id="goroutine-is-not-in-the-critical-section">Goroutine is not in the critical section</h3><p>In the snippet below, given that the caller holds the lock, is the code in the goroutine within the critical section?</p><pre><code class="language-go">rf.mu.Lock()
-go func() {
-    term := rf.currentTerm // Are we in the critical section?
-}
-rf.mu.Unlock()
-</code></pre><p>The answer is no. The goroutine can run at any time in the future, maybe long after the lock is released on the last line. There is no guarantee that the lock is still being held by the caller of the Go routine. Even if it does, the goroutine is still asynchronous to its caller.</p><p>As a principle, do not access protected fields in a goroutine, or hold the lock when doing so.</p><h2 id="miscellaneous">Miscellaneous</h2><h3 id="there-is-potentially-a-bug-in-the-testing-framework">There is potentially a bug in the testing framework</h3><p>The potential bug causes new instances not being added to the simulated network.</p><p>If I run the 'basic persistent' test in 2C 100 times, when a server is supposed to be restarted and connected to the network, there is a ~2% chance none of the other servers could reach it. I know the other servers were alive, because they were sending and receiving heartbeats. The tests usually ended up with timing-outes after 10 minutes. This error happens more frequently if I increase the rate of sending RPCs.</p><p>It could also be a deadlock in my code. I have yet to formally prove the bug exists.</p><h3 id="disk-delay-was-not-emulated">Disk delay was not emulated</h3><p>In 6.824, <code>persistent()</code> is implemented in memory. I can pretty much call it as often as I want, without any performance impact. But in practise, disk delay can also be significant if <code>sync()</code> is called extensively.</p><h2 id="corrections">Corrections</h2><p>When writing all of those down, I noticed that while my implementation passes all the tests, some of it might not be the standard way of doing things in Raft. For example, log entry syncing should really be triggered by <a href="https://thesquareplanet.com/blog/students-guide-to-raft/#the-importance-of-details">timer only</a>. I plan to correct those behaviors, and please read at your own risk. :-)</p>
+                <p>标题是从 Culture Fit 生硬翻译过来的。哦，应该是 unfit。</p><p>我最近（9个月前）换了组。新的组里有一大一小两个 TL （Tech Lead，可以翻译成“技术带头人”）。就管他们叫大小王吧，国王的王。在这九个月里，我观察到了一些让我不适的“文化”。</p><p>小王和我做项目。周一，他要求我实现一个改进版的想法，我和他深入讨论（争执）了之后，觉得有一定道理。他也跟合作的姐妹组开了会，通报了他的想法，得到了肯定。小王对这个想法相当兴奋。</p><p>周五我们和大王一起开会，讨论我们的项目。会议进行到一半，大王简短地问为什么要改进，原来的计划也很好嘛。紧接着大王提议可以按原来的计划做，然后再做改进版。小王当场把我们的下一步计划改了回去，一句多余的解释都没有。接受程度之高让我吃了一惊。</p><p>这已经不是我第一次遇到这种情景了。私下里，我跟大王提到对这种“不解释”行为的不解。大王说他自己没有注意到类似的事情，也没有在和其他 leader 开会的时候注意到类似的事情。他的解释是，可能只是工作习惯不同，”picking the right battle to fight”，也可能是为了尽快争取支持，还可能是因为两个提议差别不大，更可能是因为没有时间讨论。我说那我还是有挺多需要学习的。</p><p>上次发生这种事的时候，小王的指导的一个项目被搁置，负责执行的同事换了主力项目。当时开会甚至都不是为了讨论小王的项目，负责执行的同事也没有在场。我在我司这么多年，从来没听说过这种事情。</p><p>我还遇到过，小王下手改我的个人备忘录，告诉我下周要做什么，下下周要做什么。我跟我老板抗议，她说她也会这样做。嗯，仔细想想她也经常提非常非常细节的要求。</p><p>大小两个王都是 L5，我也是 L5。大王还比较年轻一点。</p><p>真的不适。</p>
 
             </section>
 
