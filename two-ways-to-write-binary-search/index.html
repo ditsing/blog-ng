@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+	<title>Two ways to implement binary search</title>
+
+	<meta name="HandheldFriendly" content="True">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" type="text/css" href="../assets/css/style.css?v=b2f87eedc0">
+
+	<link rel="icon" href="../favicon.png" type="image/png">
+    <link rel="canonical" href="index.html">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <link rel="amphtml" href="amp/index.html">
+    
+    <meta property="og:site_name" content="顿">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Two ways to implement binary search">
+    <meta property="og:description" content="There are only two correct ways to implement binary search">
+    <meta property="og:url" content="http://raspberrypi.local/two-ways-to-write-binary-search/">
+    <meta property="og:image" content="http://raspberrypi.local/content/images/2021/01/background2-1.jpg">
+    <meta property="article:published_time" content="2021-01-26T05:28:06.000Z">
+    <meta property="article:modified_time" content="2021-01-27T19:10:39.000Z">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Two ways to implement binary search">
+    <meta name="twitter:description" content="There are only two correct ways to implement binary search">
+    <meta name="twitter:url" content="http://raspberrypi.local/two-ways-to-write-binary-search/">
+    <meta name="twitter:image" content="http://raspberrypi.local/content/images/2021/01/background2-1.jpg">
+    <meta name="twitter:label1" content="Written by">
+    <meta name="twitter:data1" content="Jing Yang 杨靖">
+    <meta name="twitter:site" content="@dytsing">
+    <meta property="og:image:width" content="2903">
+    <meta property="og:image:height" content="983">
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "顿",
+        "url": "http://raspberrypi.local/",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "http://raspberrypi.local/content/images/2021/01/hammer_transparent.png"
+        }
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Jing Yang 杨靖",
+        "url": "http://raspberrypi.local/author/ditsing/",
+        "sameAs": []
+    },
+    "headline": "Two ways to implement binary search",
+    "url": "http://raspberrypi.local/two-ways-to-write-binary-search/",
+    "datePublished": "2021-01-26T05:28:06.000Z",
+    "dateModified": "2021-01-27T19:10:39.000Z",
+    "image": {
+        "@type": "ImageObject",
+        "url": "http://raspberrypi.local/content/images/2021/01/background2-1.jpg",
+        "width": 2903,
+        "height": 983
+    },
+    "description": "There are only two correct ways to implement binary search",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "http://raspberrypi.local/"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 3.33">
+    <link rel="alternate" type="application/rss+xml" title="顿" href="../rss/index.html">
+</head>
+
+<body class="post-template">
+
+	<div class="nav-header">
+		<nav class="nav-wrapper" aria-label="Main">
+				<span class="logo">
+					<a href="../" title="Home"><img src="../content/images/2021/01/hammer_transparent.png" alt="Logo"></a>
+				</span>
+				<ul>
+		<li class="nav-home"><a href="../"><span>Home</span></a></li>
+		<li class="nav-author"><a href="../author/"><span>Author</span></a></li>
+		<li class="nav-zhong-wen"><a href="../tag/cn/"><span>中文</span></a></li>
+		<li class="nav-jian-zheng"><a href="http://raspberrypi.local/tag/jian-zheng/"><span>键政</span></a></li>
+		<li class="nav-guan-yu"><a href="../about-me/"><span>关于</span></a></li>
+		<li class="nav-jiu-bo"><a href="http://old.ditsing.com"><span>旧博</span></a></li>
+</ul>
+
+				<ul class="nav-side">
+					<li class="nav-twitter"><a aria-label="Twitter" href="https://twitter.com/dytsing" title="@dytsing" target="_blank"><i class="icon icon-twitter" aria-hidden="true"></i></a></li>
+					<li class="nav-github"><a aria-label="GitHub" href="https://github.com/ditsing" title="" target="_blank"><i class="icon icon-github" aria-hidden="true"></i></a></li>
+					<li class="nav-rss"><a title="RSS" href="../rss/index.rss" target="_blank"><i class="icon icon-rss" aria-hidden="true"></i></a></li>
+					<li class="nav-search" style="display: none;"><a title="Search"><i class="icon icon-search" aria-hidden="true"></i></a></li>
+				</ul>
+		</nav>
+
+		<div class="nav-wrapper-control">
+			<div class="inner">
+				<a class="nav-menu" role="button"><i class="icon icon-menu" aria-hidden="true"></i>Menu</a>
+				<a class="nav-search" style="display: none;" title="Search" role="button"><i class="icon icon-search" aria-hidden="true"></i></a>
+			</div>
+		</div>
+	</div>
+	<div class="nav-close" role="button" aria-label="Close"></div>
+
+	<section class="page-wrapper">
+
+		
+
+<div class="progress-container">
+	<span class="progress-bar"></span>
+</div>
+
+<header class="post-header  has-cover ">
+	<div class="inner">
+		<span class="post-info">
+			<span class="post-type">Article</span>
+		</span>
+		<h1 class="post-title">Two ways to implement binary search</h1>
+		<div class="post-meta">
+			<div class="post-meta-avatars">
+					<figure class="post-meta-avatar avatar">
+					</figure>
+			</div>
+			<h4 class="post-meta-author"><a href="../author/ditsing/">Jing Yang 杨靖</a></h4>
+			<time datetime="25-01-2021">25 Jan 2021</time> • 2 min read
+		</div>
+		<div class="post-cover cover">
+			<img srcset="../content/images/size/w320/2021/01/background2-1.jpg 320w,
+             ../content/images/size/w640/2021/01/background2-1.jpg 640w,
+            ../content/images/size/w960/2021/01/background2-1.jpg 960w,
+           ../content/images/size/w1920/2021/01/background2-1.jpg 1920w" src="../content/images/size/w1920/2021/01/background2-1.jpg" alt="Two ways to implement binary search">
+		</div>
+	</div>
+</header>
+
+<main class="content" role="main">
+	<article class="post">
+		<div class="inner">
+
+			<section class="post-content">
+				<p>There are only two correct ways to implement binary search. Here is the less known one.</p><!--kg-card-begin: markdown--><pre><code class="language-C">int binary_search(int *num, int len, int target) {
+  int l = -1;
+  int r = len;
+  while (l &lt; r - 1) {
+      int mid = (l + r) &gt;&gt; 1;
+      if (nums[mid] &lt; target) {
+        l = mid;
+      } else {
+        r = mid;
+      }
+  }
+  
+  return r;
+}
+</code></pre>
+<!--kg-card-end: markdown--><p>This version returns the index of the first element in <code>nums</code> that is greater than or equal to the target. If there is no such element, <code>len</code> will be returned. </p><p>Although only <code>r</code> is returned,  <code>l</code> could also be of interest. It contains the index of the last element that is smaller than the target. if there is no such element, <code>l</code> will be <code>-1</code>, which is a good indicator for "no such element". It is always the case that <code>r = l + 1</code> when the algorithm terminates.</p><p>Replace <code>&lt;</code> with <code>&lt;=</code>, <code>l</code> will be the last element that is <strong>smaller than or equal to</strong> the target, and  <code>r</code> will be the first element that is <strong>greater than</strong> the target, subject to the same special cases above if there is no such element. If operator <code>&lt;=</code> is not implemented, use <code>!(target &lt; nums[mid])</code> which is logically equivalent to <code>nums[mid] &lt;= target</code>.</p><figure class="kg-card kg-image-card kg-card-hascaption"><img src="../content/images/2021/01/with_equal2.jpg" class="kg-image" alt><figcaption>Final value of pointers</figcaption></figure><p>Note if there is only one element in <code>nums</code> that is equal to target, <code>(&lt;,r)</code> and <code>(&lt;=,l)</code> will converge. If target is not in <code>nums</code>, see the following picture.</p><figure class="kg-card kg-image-card kg-card-hascaption"><img src="../content/images/2021/01/no_equal2.jpg" class="kg-image" alt><figcaption>Final value of pointers – target not found</figcaption></figure><p></p><p>Or if you prefer precise definitions:</p><!--kg-card-begin: markdown--><table>
+<thead>
+<tr>
+<th>op</th>
+<th>symbol</th>
+<th>is the</th>
+<th>that is</th>
+<th>or</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&lt;</td>
+<td>l</td>
+<td>last</td>
+<td>smaller than (<strong>&lt;</strong>)</td>
+<td>-1</td>
+</tr>
+<tr>
+<td>&lt;=</td>
+<td>l</td>
+<td>last</td>
+<td>smaller than or equal to (<strong>&lt;=</strong>)</td>
+<td>-1</td>
+</tr>
+<tr>
+<td>&lt;</td>
+<td>r</td>
+<td>first</td>
+<td>greater than or equal to</td>
+<td>len</td>
+</tr>
+<tr>
+<td>&lt;=</td>
+<td>r</td>
+<td>first</td>
+<td>greater than</td>
+<td>len</td>
+</tr>
+</tbody>
+</table>
+<!--kg-card-end: markdown--><p>The third line in the above table <code>(&lt;, r)</code> implements <code>lower_bound</code>, while the fourth line <code>(&lt;=, r)</code> implements <code>upper_bound</code>.</p><p>The drawback of this approach, is that the initially <code>l</code> is set to a special value <code>-1</code>. This might not always be possible if the index is of type <code>usize</code>. The advantage, is that neither <code>l</code> or <code>r</code> need to plus or minus one in each iteration, which leaves no room for error.</p><p>The other correct way of implementing binary search, is the approach used in <code>lower_bound</code> and <code>upper_bound</code> in C++ STL. It can be found on <a href="http://www.cplusplus.com/reference/algorithm/lower_bound/">cppreference.com</a>.</p><h2 id="criteria-of-being-correct">Criteria of being correct</h2><p>To be correct, <code>binary_search</code> must return a reasonable value in all of the following cases, when looking for <code>2</code>.</p><pre><code class="language-C">1 2 3
+1 2
+1 3
+2 3
+1
+2
+3
+1 1 2 2 3 3
+1 1 2 2
+1 1 3 3
+2 2 3 3
+1 1
+2 2
+3 3</code></pre><p>You might also want to duplicate each case into a odd length one and an even length one.</p>
+			</section>
+
+			<section class="post-footer">
+
+				<div class="post-share">
+					<span class="post-info-label">Share</span>
+					<a title="Twitter" aria-label="Twitter" class="twitter" href="https://twitter.com/share?text=Two%20ways%20to%20implement%20binary%20search&amp;url=http://raspberrypi.local/two-ways-to-write-binary-search/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+						<i class="icon icon-twitter" aria-hidden="true"></i>
+					</a>
+					<a title="Facebook" aria-label="Facebook" class="facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://raspberrypi.local/two-ways-to-write-binary-search/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+						<i class="icon icon-facebook" aria-hidden="true"></i>
+					</a>
+					<a title="LinkedIn" aria-label="LinkedIn" class="linkedin" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http://raspberrypi.local/two-ways-to-write-binary-search//&amp;title=Two%20ways%20to%20implement%20binary%20search" onclick="window.open(this.href, 'linkedin-share', 'width=930,height=720');return false;">
+						<i class="icon icon-linkedin" aria-hidden="true"></i>
+					</a>
+					<a title="Email" aria-label="Email" class="email" href="mailto:?subject=Two%20ways%20to%20implement%20binary%20search&amp;body=http://raspberrypi.local/two-ways-to-write-binary-search/">
+						<i class="icon icon-mail" aria-hidden="true"></i>
+					</a>
+				</div>
+
+
+			</section>
+
+
+			<section class="post-comments">
+				<a id="show-disqus" class="post-comments-activate">Show Comments</a>
+			   <div id="disqus_thread"></div>
+			</section>
+
+
+			<aside class="post-nav">
+					<a class="post-nav-prev" href="../implementing-raft-with-go/">
+						<section class="post-nav-teaser">
+							<i class="icon icon-arrow-right" aria-label="Previous post"></i>
+							<h2 class="post-nav-title">Implementing Raft with Go</h2>
+							<p class="post-nav-excerpt">Following my previous post Summary of Implementing Raft in Go, I gathered…</p>
+							<p class="post-nav-meta"><time datetime="23-08-2020">23 Aug 2020</time></p>
+						</section>
+					</a>
+				<div class="clear"></div>
+			</aside>
+
+
+		</div>
+	</article>
+</main>
+
+
+
+
+		<div id="search" class="container">
+			<div class="content">
+				<div class="blog-header">
+					<div class="inner">
+						<div class="archive archive-search box archive-box">
+							<span class="archive-info">
+								<span class="archive-type">Archive</span>
+							</span>
+							<h2 class="archive-title">Search</h2>
+							<form class="search">
+								<input type="text" id="search-field" placeholder="Search all posts…">
+								<input type="submit" value="Search">
+							</form>
+							<div id="topics">
+								<span class="archive-info">
+									<span class="archive-type">Archive</span>
+								</span>
+								<h2 class="archive-title">Topics</h2>
+								<span class="post-tags archive-taglist">
+											<a href="../tag/cn/">中文: 2</a>
+											<a href="../tag/raft/">Raft: 2</a>
+											<a href="../tag/gong-zuo/">工作: 1</a>
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="results"></div>
+			</div>
+			<div class="search-close"></div>
+		</div>
+
+		<div class="nav-footer">
+			<nav class="nav-wrapper" aria-label="Footer">
+				<span class="nav-copy">顿 © 2021</span>
+				<span class="nav-credits">Published with <a href="https://ghost.org">Ghost</a> • Theme <a href="https://github.com/zutrinken/attila">Attila</a></span>
+			</nav>
+		</div>
+
+	</section>
+
+	<script type="text/javascript" src="../assets/js/script.js?v=b2f87eedc0"></script>
+
+	<script>
+  $(document).ready(function () {
+		var viewport = $(window);
+		var post = $('.post-content');
+		// Responsive videos with fitVids
+    post.fitVids();
+		// Format code blocks and add line numbers
+		function codestyling() {
+	    $('pre code').each(function(i, e) {
+				// Code highlight
+	      hljs.highlightBlock(e);
+	      // No lines for plain text blocks
+	      if (!$(this).hasClass('language-text')) {
+	        var code = $(this);
+					// Calculate amount of lines
+	        var lines = code.html().split(/\n(?!$)/g).length;
+	        var numbers = [];
+	        if (lines > 1) {
+	          lines++;
+	        }
+	        for (i = 1; i < lines; i++) {
+	          numbers += '<span class="line" aria-hidden="true">' + i + '</span>';
+	        }
+	        code.parent().append('<div class="lines">' + numbers + '</div>');
+	      }
+	    });
+	  }
+	  codestyling();
+		// Reading progress bar on window top
+	  function readingProgress() {
+			var postBottom = post.offset().top + post.height();
+			var viewportHeight = viewport.height();
+      var progress = 100 - (((postBottom - (viewport.scrollTop() + viewportHeight) + viewportHeight / 3) / (postBottom - viewportHeight + viewportHeight / 3)) * 100);
+      $('.progress-bar').css('width', progress + '%');
+      (progress > 100) ? $('.progress-container').addClass('complete'): $('.progress-container').removeClass('complete');
+	  }
+	  readingProgress();
+		// Trigger reading progress
+	  viewport.on({
+	    'scroll': function() {
+	      readingProgress();
+	    },
+	    'resize': function() {
+	      readingProgress();
+	    },
+	    'orientationchange': function() {
+	      readingProgress();
+	    }
+	  });
+		// Check if disqus is defined by code injection
+		if (typeof disqus === 'undefined') {
+			// hide comment section
+	    $('.post-comments').css({
+	      'display': 'none'
+	    });
+	  } else {
+	    $('#show-disqus').on('click', function() {
+	      $.ajax({
+	        type: "GET",
+	        url: "//" + disqus + ".disqus.com/embed.js",
+	        dataType: "script",
+	        cache: true
+	      });
+	      $(this).parent().addClass('activated');
+	    });
+	  }
+  });
+</script>
+
+
+	
+
+</body>
