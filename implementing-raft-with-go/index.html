@@ -11,7 +11,7 @@
 	<link rel="stylesheet" type="text/css" href="../assets/css/style.css?v=6232de21e8">
 
 	<script>
-			var siteUrl = 'http://raspberrypi.local';
+			var siteUrl = 'https://www.ditsing.com';
 	</script>
 
 	<script>
@@ -37,7 +37,7 @@
     <meta property="og:type" content="article">
     <meta property="og:title" content="Implementing Raft with Go">
     <meta property="og:description" content="Following my previous post Summary of Implementing Raft in Go, I gathered some thoughts on related topics. Latency and RPCsLatency matters in a distributed systemLatency is tied directly to availability. The larger the latency, the longer the period the system is unavailable. RPC latency compounds quickly when multiple rounds of">
-    <meta property="og:url" content="http://raspberrypi.local/implementing-raft-with-go/">
+    <meta property="og:url" content="https://www.ditsing.com/implementing-raft-with-go/">
     <meta property="article:published_time" content="2020-08-23T07:47:00.000Z">
     <meta property="article:modified_time" content="2020-12-24T17:26:58.000Z">
     <meta property="article:tag" content="Raft">
@@ -45,7 +45,7 @@
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Implementing Raft with Go">
     <meta name="twitter:description" content="Following my previous post Summary of Implementing Raft in Go, I gathered some thoughts on related topics. Latency and RPCsLatency matters in a distributed systemLatency is tied directly to availability. The larger the latency, the longer the period the system is unavailable. RPC latency compounds quickly when multiple rounds of">
-    <meta name="twitter:url" content="http://raspberrypi.local/implementing-raft-with-go/">
+    <meta name="twitter:url" content="https://www.ditsing.com/implementing-raft-with-go/">
     <meta name="twitter:label1" content="Written by">
     <meta name="twitter:data1" content="Jing Yang 杨靖">
     <meta name="twitter:label2" content="Filed under">
@@ -59,27 +59,27 @@
     "publisher": {
         "@type": "Organization",
         "name": "顿",
-        "url": "http://raspberrypi.local/",
+        "url": "https://www.ditsing.com/",
         "logo": {
             "@type": "ImageObject",
-            "url": "http://raspberrypi.local/content/images/2021/01/hammer_transparent.png"
+            "url": "https://www.ditsing.com/content/images/2021/01/hammer_transparent.png"
         }
     },
     "author": {
         "@type": "Person",
         "name": "Jing Yang 杨靖",
-        "url": "http://raspberrypi.local/author/ditsing/",
+        "url": "https://www.ditsing.com/author/ditsing/",
         "sameAs": []
     },
     "headline": "Implementing Raft with Go",
-    "url": "http://raspberrypi.local/implementing-raft-with-go/",
+    "url": "https://www.ditsing.com/implementing-raft-with-go/",
     "datePublished": "2020-08-23T07:47:00.000Z",
     "dateModified": "2020-12-24T17:26:58.000Z",
     "keywords": "Raft",
     "description": "Following my previous post Summary of Implementing Raft in Go\n[/raft-from-an-engineering-perspective/], I gathered some thoughts on related\ntopics.\n\nLatency and RPCs\nLatency matters in a distributed system\nLatency is tied directly to availability. The larger the latency, the longer the\nperiod the system is unavailable. RPC latency compounds quickly when multiple\nrounds of RPCs are needed, i.e. during a log entry disagreement. In Raft,\nlatency is mostly caused by the network. A lock (mutex, spinl",
     "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": "http://raspberrypi.local/"
+        "@id": "https://www.ditsing.com/"
     }
 }
     </script>
@@ -99,7 +99,7 @@
 		<li class="nav-home"><a href="../"><span>Home</span></a></li>
 		<li class="nav-author"><a href="../author/"><span>Author</span></a></li>
 		<li class="nav-zhong-wen"><a href="../tag/cn/"><span>中文</span></a></li>
-		<li class="nav-jian-zheng"><a href="http://raspberrypi.local/tag/jian-zheng/"><span>键政</span></a></li>
+		<li class="nav-jian-zheng"><a href="https://www.ditsing.com/tag/jian-zheng/"><span>键政</span></a></li>
 		<li class="nav-guan-yu"><a href="../about-me/"><span>关于</span></a></li>
 		<li class="nav-jiu-bo"><a href="http://old.ditsing.com"><span>旧博</span></a></li>
 </ul>
@@ -188,16 +188,16 @@ rf.mu.Unlock()
 
 				<div class="post-share">
 					<span class="post-info-label">Share</span>
-					<a title="Twitter" aria-label="Twitter" class="twitter" href="https://twitter.com/share?text=Implementing%20Raft%20with%20Go&amp;url=http://raspberrypi.local/implementing-raft-with-go/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+					<a title="Twitter" aria-label="Twitter" class="twitter" href="https://twitter.com/share?text=Implementing%20Raft%20with%20Go&amp;url=https://www.ditsing.com/implementing-raft-with-go/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
 						<i class="icon icon-twitter" aria-hidden="true"></i>
 					</a>
-					<a title="Facebook" aria-label="Facebook" class="facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://raspberrypi.local/implementing-raft-with-go/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+					<a title="Facebook" aria-label="Facebook" class="facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://www.ditsing.com/implementing-raft-with-go/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
 						<i class="icon icon-facebook" aria-hidden="true"></i>
 					</a>
-					<a title="LinkedIn" aria-label="LinkedIn" class="linkedin" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http://raspberrypi.local/implementing-raft-with-go//&amp;title=Implementing%20Raft%20with%20Go" onclick="window.open(this.href, 'linkedin-share', 'width=930,height=720');return false;">
+					<a title="LinkedIn" aria-label="LinkedIn" class="linkedin" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https://www.ditsing.com/implementing-raft-with-go//&amp;title=Implementing%20Raft%20with%20Go" onclick="window.open(this.href, 'linkedin-share', 'width=930,height=720');return false;">
 						<i class="icon icon-linkedin" aria-hidden="true"></i>
 					</a>
-					<a title="Email" aria-label="Email" class="email" href="mailto:?subject=Implementing%20Raft%20with%20Go&amp;body=http://raspberrypi.local/implementing-raft-with-go/">
+					<a title="Email" aria-label="Email" class="email" href="mailto:?subject=Implementing%20Raft%20with%20Go&amp;body=https://www.ditsing.com/implementing-raft-with-go/">
 						<i class="icon icon-mail" aria-hidden="true"></i>
 					</a>
 				</div>
