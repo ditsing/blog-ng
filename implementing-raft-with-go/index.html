@@ -1,14 +1,15 @@
 <!DOCTYPE html>
+<html lang="">
 <head>
 
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
 	<title>Implementing Raft with Go</title>
-	<meta name="HandheldFriendly" content="True">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="HandheldFriendly" content="True" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-	<link rel="stylesheet" type="text/css" href="../assets/css/style.css?v=e1b21d4a84">
+	<link rel="stylesheet" type="text/css" href="/assets/css/style.css?v=af696f601d" />
 
 	<script>
 			var siteUrl = 'https://www.ditsing.com';
@@ -28,29 +29,29 @@
 			}
 	</script>
 
-	<link rel="icon" href="../favicon.png" type="image/png">
-    <link rel="canonical" href="index.html">
-    <meta name="referrer" content="no-referrer-when-downgrade">
-    <link rel="amphtml" href="amp/index.html">
+	<link rel="icon" href="/favicon.png" type="image/png" />
+    <link rel="canonical" href="https://www.ditsing.com/implementing-raft-with-go/" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    <link rel="amphtml" href="https://www.ditsing.com/implementing-raft-with-go/amp/" />
     
-    <meta property="og:site_name" content="顿">
-    <meta property="og:type" content="article">
-    <meta property="og:title" content="Implementing Raft with Go">
-    <meta property="og:description" content="Following my previous post Summary of Implementing Raft in Go, I gathered some thoughts on related topics. Latency and RPCsLatency matters in a distributed systemLatency is tied directly to availability. The larger the latency, the longer the period the system is unavailable. RPC latency compounds quickly when multiple rounds of">
-    <meta property="og:url" content="https://www.ditsing.com/implementing-raft-with-go/">
-    <meta property="article:published_time" content="2020-08-23T07:47:00.000Z">
-    <meta property="article:modified_time" content="2020-12-24T17:26:58.000Z">
-    <meta property="article:tag" content="Raft">
+    <meta property="og:site_name" content="顿" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Implementing Raft with Go" />
+    <meta property="og:description" content="Following my previous post Summary of Implementing Raft in Go, I gathered some thoughts on related topics. Latency and RPCsLatency matters in a distributed systemLatency is tied directly to availability. The larger the latency, the longer the period the system is unavailable. RPC latency compounds quickly when multiple rounds of" />
+    <meta property="og:url" content="https://www.ditsing.com/implementing-raft-with-go/" />
+    <meta property="article:published_time" content="2020-08-23T07:47:00.000Z" />
+    <meta property="article:modified_time" content="2020-12-24T17:26:58.000Z" />
+    <meta property="article:tag" content="Raft" />
     
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Implementing Raft with Go">
-    <meta name="twitter:description" content="Following my previous post Summary of Implementing Raft in Go, I gathered some thoughts on related topics. Latency and RPCsLatency matters in a distributed systemLatency is tied directly to availability. The larger the latency, the longer the period the system is unavailable. RPC latency compounds quickly when multiple rounds of">
-    <meta name="twitter:url" content="https://www.ditsing.com/implementing-raft-with-go/">
-    <meta name="twitter:label1" content="Written by">
-    <meta name="twitter:data1" content="Jing Yang 杨靖">
-    <meta name="twitter:label2" content="Filed under">
-    <meta name="twitter:data2" content="Raft">
-    <meta name="twitter:site" content="@dytsing">
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Implementing Raft with Go" />
+    <meta name="twitter:description" content="Following my previous post Summary of Implementing Raft in Go, I gathered some thoughts on related topics. Latency and RPCsLatency matters in a distributed systemLatency is tied directly to availability. The larger the latency, the longer the period the system is unavailable. RPC latency compounds quickly when multiple rounds of" />
+    <meta name="twitter:url" content="https://www.ditsing.com/implementing-raft-with-go/" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Jing Yang 杨靖" />
+    <meta name="twitter:label2" content="Filed under" />
+    <meta name="twitter:data2" content="Raft" />
+    <meta name="twitter:site" content="@dytsing" />
     
     <script type="application/ld+json">
 {
@@ -84,8 +85,8 @@
 }
     </script>
 
-    <meta name="generator" content="Ghost 3.33">
-    <link rel="alternate" type="application/rss+xml" title="顿" href="../rss/index.html">
+    <meta name="generator" content="Ghost 3.42" />
+    <link rel="alternate" type="application/rss+xml" title="顿" href="https://www.ditsing.com/rss/" />
 </head>
 
 <body class="post-template tag-raft">
@@ -93,14 +94,14 @@
 	<div class="nav-header">
 		<nav class="nav-wrapper" aria-label="Main">
 				<span class="logo">
-					<a href="../" title="Home"><img src="../content/images/2021/01/hammer_transparent.png" alt="Logo"></a>
+					<a href="https://www.ditsing.com" title="Home"><img src="/content/images/2021/01/hammer_transparent.png" alt="Logo" /></a>
 				</span>
 				<ul>
-		<li class="nav-home"><a href="../"><span>Home</span></a></li>
-		<li class="nav-author"><a href="../author/"><span>Author</span></a></li>
-		<li class="nav-zhong-wen"><a href="../tag/cn/"><span>中文</span></a></li>
+		<li class="nav-home"><a href="https://www.ditsing.com/"><span>Home</span></a></li>
+		<li class="nav-author"><a href="https://www.ditsing.com/author/"><span>Author</span></a></li>
+		<li class="nav-zhong-wen"><a href="https://www.ditsing.com/tag/cn/"><span>中文</span></a></li>
 		<li class="nav-jian-zheng"><a href="https://www.ditsing.com/tag/jian-zheng/"><span>键政</span></a></li>
-		<li class="nav-guan-yu"><a href="../about-me/"><span>关于</span></a></li>
+		<li class="nav-guan-yu"><a href="https://www.ditsing.com/about-me/"><span>关于</span></a></li>
 		<li class="nav-jiu-bo"><a href="http://old.ditsing.com"><span>旧博</span></a></li>
 </ul>
 
@@ -124,7 +125,7 @@
     </a>
   </li>
   <li class="nav-rss">
-    <a title="RSS" href="../rss/index.rss" target="_blank">
+    <a title="RSS" href="https://www.ditsing.com/rss/" target="_blank">
       <i class="icon icon-rss" aria-hidden="true"></i>
     </a>
   </li>
@@ -165,8 +166,8 @@
 					<figure class="post-meta-avatar avatar">
 					</figure>
 			</div>
-			<h4 class="post-meta-author"><a href="../author/ditsing/">Jing Yang 杨靖</a></h4>
-			<time datetime="23-08-2020">23 Aug 2020</time> • 5 min read
+			<h4 class="post-meta-author"><a href="/author/ditsing/">Jing Yang 杨靖</a></h4>
+			<time datetime="23-08-2020">23 Aug 2020</time> &bull; 5 min read
 		</div>
 	</div>
 </header>
@@ -176,7 +177,7 @@
 		<div class="inner">
 
 			<section class="post-content">
-				<p>Following my previous post <a href="../raft-from-an-engineering-perspective/">Summary of Implementing Raft in Go</a>, I gathered some thoughts on related topics.</p><h2 id="latency-and-rpcs">Latency and RPCs</h2><h3 id="latency-matters-in-a-distributed-system">Latency matters in a distributed system</h3><p>Latency is tied directly to availability. The larger the latency, the longer the period the system is unavailable. RPC latency compounds quickly when multiple rounds of RPCs are needed, i.e. during a log entry disagreement. In Raft, latency is mostly caused by the network. A lock (mutex, spinlock etc.) usually adds <a href="https://news.ycombinator.com/item?id=21956314">less than 5ms of latency</a>, whereas an RPC could be <a href="https://www.yonego.com/nl/why-milliseconds-matter/">a couple of times as slow</a>. Ironically, we can run hundreds of thousands of instructions in that time on most consumer CPUs today. There is a big price to pay to run distributed systems.</p><h3 id="channels-and-latency">Channels and latency</h3><p>Go channels can be a drag in a latency-sensitive environment. The sending party usually goes into sleep immediately after putting a message into a channel. The receiving end, on the other hand, may not be awoken immediately.</p><p>I noticed this pattern when counting election votes. I have a goroutine watching the RPC response of <code>RequestVote</code>. It sends a "please count this vote" message to another goroutine after receiving the RPC response. What often happens is that the first goroutine would print "I received a vote", but the corresponding "I counted this vote" message never shows up before the next election starts. The scheduling behavior is a bit mysterious to me. In contrast, the cause and effect is much more clear and direct when I use a condition variable.</p><h3 id="rpcs-must-be-retried">RPCs must be retried</h3><p>RPC failures can be common when the network is unstable. Retrying RPCs helps mitigate the risk of staying unavailable longer than necessary.</p><p>The downside of RPC retries is that if everybody is retrying with high frequency, a lot of network bandwidth will be wasted on sending the same RPCs over and over again. The solution is <a href="https://en.wikipedia.org/wiki/Exponential_backoff">exponential backoff</a>. The first retry should be <code>n</code> ms after an RPC failure, the second retry should be <code>2n</code> ms after that, then <code>4n</code> and so on. The wait time grows quickly, thus only a linear amount of RPC (<code>2/n</code>) would be sent in a unit of time.</p><p>Another down side of retries is the "stay down" situation. When an RPC server is down, the RPCs ought to be processed during that time will be withheld by clients. When the server is up again, a huge amount of retries arrive at the exact same time. That could easily overwhelm the RPC server's buffer, and cause it to die again. The solution is to add a randomized component to exponential backoff. That way RPCs will arrive at slightly different times, allowing some processing time. Together the technique is called randomized exponential backoff, and is proven to be effective.</p><h3 id="no-unnecessary-rpcs">No unnecessary RPCs</h3><p>The other extreme of handling RPCs is sending as many of them as possible. This is obviously bad, especially when the network is congested already. I once tried to make the leader send one heartbeat immediately after another, to minimize new elections when heartbeats are dropped by the network. It turns out even a software simulated network has its bandwidth limit. The leader ended up not being able to do anything other than sending heartbeats.</p><p>Another experiment I did was worse. In my implementation, the leader starts syncing logs whenever a new entry is created by clients. Accidentally I made it backtrack (i.e. sending another RPC with more logs) when the RPC timeouts, and at the same time retry the original RPC as well. The number of RPCs blowed up exponentially, because one failed RPC causes two being sent. The goroutine resource was quickly exhausted when a few new entries were added at the same time. That is, I reached the maximum number of goroutines that can be created. I have since reverted to retrying in an RPC failure, and backtracking only when the recipient disagrees.</p><h2 id="condition-variables">Condition Variables</h2><h3 id="mutexes-and-condition-variables-are-handy">Mutexes and condition variables are handy</h3><p>Mutex is a well known concept. Though I have never heard of condition variables before, at least not in the form that comes with Go. A condition variable is like a semaphore, in the sense that you can wait and signal on it (<a href="https://en.wikipedia.org/wiki/Semaphore_%28programming%29">PV Primitives</a>. The difference (among others) is that after a signal is received, a condition variable automatically acquires the lock associated with it. Acquiring the lock is both convenient, and a requirement for correctness. The reasoning is that the condition can only be safely evaluated while holding the lock, so that the data underneath the condition is protected.</p><p>When implementing Raft, there are many places where we need to wait on a condition. Once that condition is met, we need to acquire the global lock that guards core states. Condition variables fit perfectly into this type of usage.</p><h3 id="but-sometimes-i-only-need-a-semaphore-">But sometimes I only need a semaphore ...</h3><p>There is one case where I don't need the locking part of a condition variable: the election. After sending out requests to vote, the election goroutine will block until one of the following things happen</p><ol><li>Enough votes for me are collected,</li><li>Enough votes against me are collected,</li><li>Someone has started a new election, or</li><li>We are being shut down.</li></ol><p>Those four things can be easily implemented with atomic integer counters. We do not need to acquire the global lock to access or modify those counters. What I really need is a semaphore that works on a goroutine.</p><p>It can be argued that <strong>after</strong> one of those things happen, we might need to acquire the global lock, if we are elected. That is true. Depending on the network environment, being elected may or may not be the dominating result of an election. The line is a bit blurry.</p><p>I ended up creating a lock just for the election. The lock is also used to guarantee there is only one election running, which is a nice side effect.</p><h3 id="signa-is-not-always-required"><code>Signa()</code> is not always required?</h3><p>It appears that <strong>in some systems other than Go</strong>, condition variables can unblock without anyone calling <code>Signal()</code>. The <a href="https://golang.org/pkg/sync/#Cond.Wait">doc of <code>Wait()</code></a> says</p><blockquote>Unlike in other systems, Wait cannot return unless awoken by Broadcast or Signal.</blockquote><p>I'm wondering why that is. In those systems, extra caution should be taken before an awoken goroutine makes any moves.</p><h2 id="critical-sections">Critical Sections</h2><p>Critical sections are the code between acquiring a lock and releasing it. No lock should be held for too long, for obvious reasons. The code within critical sections thus must be short.</p><p>When implementing Raft, it is rather easy to keep it short. The most complex thing that requires holding the global lock is copying an entire array of log entries. Other than that, the only thing left is copying integers in core states. Occasionally goroutines are created while holding the lock, which is not ideal. I’m just too lazy to optimize it away.</p><h3 id="goroutine-is-not-in-the-critical-section">Goroutine is not in the critical section</h3><p>In the snippet below, given that the caller holds the lock, is the code in the goroutine within the critical section?</p><pre><code class="language-go">rf.mu.Lock()
+				<p>Following my previous post <a href="https://www.ditsing.com/raft-from-an-engineering-perspective/">Summary of Implementing Raft in Go</a>, I gathered some thoughts on related topics.</p><h2 id="latency-and-rpcs">Latency and RPCs</h2><h3 id="latency-matters-in-a-distributed-system">Latency matters in a distributed system</h3><p>Latency is tied directly to availability. The larger the latency, the longer the period the system is unavailable. RPC latency compounds quickly when multiple rounds of RPCs are needed, i.e. during a log entry disagreement. In Raft, latency is mostly caused by the network. A lock (mutex, spinlock etc.) usually adds <a href="https://news.ycombinator.com/item?id=21956314">less than 5ms of latency</a>, whereas an RPC could be <a href="https://www.yonego.com/nl/why-milliseconds-matter/">a couple of times as slow</a>. Ironically, we can run hundreds of thousands of instructions in that time on most consumer CPUs today. There is a big price to pay to run distributed systems.</p><h3 id="channels-and-latency">Channels and latency</h3><p>Go channels can be a drag in a latency-sensitive environment. The sending party usually goes into sleep immediately after putting a message into a channel. The receiving end, on the other hand, may not be awoken immediately.</p><p>I noticed this pattern when counting election votes. I have a goroutine watching the RPC response of <code>RequestVote</code>. It sends a "please count this vote" message to another goroutine after receiving the RPC response. What often happens is that the first goroutine would print "I received a vote", but the corresponding "I counted this vote" message never shows up before the next election starts. The scheduling behavior is a bit mysterious to me. In contrast, the cause and effect is much more clear and direct when I use a condition variable.</p><h3 id="rpcs-must-be-retried">RPCs must be retried</h3><p>RPC failures can be common when the network is unstable. Retrying RPCs helps mitigate the risk of staying unavailable longer than necessary.</p><p>The downside of RPC retries is that if everybody is retrying with high frequency, a lot of network bandwidth will be wasted on sending the same RPCs over and over again. The solution is <a href="https://en.wikipedia.org/wiki/Exponential_backoff">exponential backoff</a>. The first retry should be <code>n</code> ms after an RPC failure, the second retry should be <code>2n</code> ms after that, then <code>4n</code> and so on. The wait time grows quickly, thus only a linear amount of RPC (<code>2/n</code>) would be sent in a unit of time.</p><p>Another down side of retries is the "stay down" situation. When an RPC server is down, the RPCs ought to be processed during that time will be withheld by clients. When the server is up again, a huge amount of retries arrive at the exact same time. That could easily overwhelm the RPC server's buffer, and cause it to die again. The solution is to add a randomized component to exponential backoff. That way RPCs will arrive at slightly different times, allowing some processing time. Together the technique is called randomized exponential backoff, and is proven to be effective.</p><h3 id="no-unnecessary-rpcs">No unnecessary RPCs</h3><p>The other extreme of handling RPCs is sending as many of them as possible. This is obviously bad, especially when the network is congested already. I once tried to make the leader send one heartbeat immediately after another, to minimize new elections when heartbeats are dropped by the network. It turns out even a software simulated network has its bandwidth limit. The leader ended up not being able to do anything other than sending heartbeats.</p><p>Another experiment I did was worse. In my implementation, the leader starts syncing logs whenever a new entry is created by clients. Accidentally I made it backtrack (i.e. sending another RPC with more logs) when the RPC timeouts, and at the same time retry the original RPC as well. The number of RPCs blowed up exponentially, because one failed RPC causes two being sent. The goroutine resource was quickly exhausted when a few new entries were added at the same time. That is, I reached the maximum number of goroutines that can be created. I have since reverted to retrying in an RPC failure, and backtracking only when the recipient disagrees.</p><h2 id="condition-variables">Condition Variables</h2><h3 id="mutexes-and-condition-variables-are-handy">Mutexes and condition variables are handy</h3><p>Mutex is a well known concept. Though I have never heard of condition variables before, at least not in the form that comes with Go. A condition variable is like a semaphore, in the sense that you can wait and signal on it (<a href="https://en.wikipedia.org/wiki/Semaphore_%28programming%29">PV Primitives</a>. The difference (among others) is that after a signal is received, a condition variable automatically acquires the lock associated with it. Acquiring the lock is both convenient, and a requirement for correctness. The reasoning is that the condition can only be safely evaluated while holding the lock, so that the data underneath the condition is protected.</p><p>When implementing Raft, there are many places where we need to wait on a condition. Once that condition is met, we need to acquire the global lock that guards core states. Condition variables fit perfectly into this type of usage.</p><h3 id="but-sometimes-i-only-need-a-semaphore-">But sometimes I only need a semaphore ...</h3><p>There is one case where I don't need the locking part of a condition variable: the election. After sending out requests to vote, the election goroutine will block until one of the following things happen</p><ol><li>Enough votes for me are collected,</li><li>Enough votes against me are collected,</li><li>Someone has started a new election, or</li><li>We are being shut down.</li></ol><p>Those four things can be easily implemented with atomic integer counters. We do not need to acquire the global lock to access or modify those counters. What I really need is a semaphore that works on a goroutine.</p><p>It can be argued that <strong>after</strong> one of those things happen, we might need to acquire the global lock, if we are elected. That is true. Depending on the network environment, being elected may or may not be the dominating result of an election. The line is a bit blurry.</p><p>I ended up creating a lock just for the election. The lock is also used to guarantee there is only one election running, which is a nice side effect.</p><h3 id="signa-is-not-always-required"><code>Signa()</code> is not always required?</h3><p>It appears that <strong>in some systems other than Go</strong>, condition variables can unblock without anyone calling <code>Signal()</code>. The <a href="https://golang.org/pkg/sync/#Cond.Wait">doc of <code>Wait()</code></a> says</p><blockquote>Unlike in other systems, Wait cannot return unless awoken by Broadcast or Signal.</blockquote><p>I'm wondering why that is. In those systems, extra caution should be taken before an awoken goroutine makes any moves.</p><h2 id="critical-sections">Critical Sections</h2><p>Critical sections are the code between acquiring a lock and releasing it. No lock should be held for too long, for obvious reasons. The code within critical sections thus must be short.</p><p>When implementing Raft, it is rather easy to keep it short. The most complex thing that requires holding the global lock is copying an entire array of log entries. Other than that, the only thing left is copying integers in core states. Occasionally goroutines are created while holding the lock, which is not ideal. I’m just too lazy to optimize it away.</p><h3 id="goroutine-is-not-in-the-critical-section">Goroutine is not in the critical section</h3><p>In the snippet below, given that the caller holds the lock, is the code in the goroutine within the critical section?</p><pre><code class="language-go">rf.mu.Lock()
 go func() {
     term := rf.currentTerm // Are we in the critical section?
 }
@@ -188,23 +189,23 @@ rf.mu.Unlock()
 
 				<div class="post-share">
 					<span class="post-info-label">Share</span>
-					<a title="Twitter" aria-label="Twitter" class="twitter" href="https://twitter.com/share?text=Implementing%20Raft%20with%20Go&amp;url=https://www.ditsing.com/implementing-raft-with-go/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+					<a title="Twitter" aria-label="Twitter" class="twitter" href="https://twitter.com/share?text=Implementing Raft with Go&url=https://www.ditsing.com/implementing-raft-with-go/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
 						<i class="icon icon-twitter" aria-hidden="true"></i>
 					</a>
 					<a title="Facebook" aria-label="Facebook" class="facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://www.ditsing.com/implementing-raft-with-go/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
 						<i class="icon icon-facebook" aria-hidden="true"></i>
 					</a>
-					<a title="LinkedIn" aria-label="LinkedIn" class="linkedin" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https://www.ditsing.com/implementing-raft-with-go//&amp;title=Implementing%20Raft%20with%20Go" onclick="window.open(this.href, 'linkedin-share', 'width=930,height=720');return false;">
+					<a title="LinkedIn" aria-label="LinkedIn" class="linkedin" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https://www.ditsing.com/implementing-raft-with-go//&amp;title=Implementing Raft with Go" onclick="window.open(this.href, 'linkedin-share', 'width=930,height=720');return false;">
 						<i class="icon icon-linkedin" aria-hidden="true"></i>
 					</a>
-					<a title="Email" aria-label="Email" class="email" href="mailto:?subject=Implementing%20Raft%20with%20Go&amp;body=https://www.ditsing.com/implementing-raft-with-go/">
+					<a title="Email" aria-label="Email" class="email" href="mailto:?subject=Implementing Raft with Go&amp;body=https://www.ditsing.com/implementing-raft-with-go/">
 						<i class="icon icon-mail" aria-hidden="true"></i>
 					</a>
 				</div>
 
 				<aside class="post-tags">
 					<span class="post-info-label">Topic</span>
-					<a href="../tag/raft/">Raft</a>
+					<a href="/tag/raft/">Raft</a>
 				</aside>
 
 			</section>
@@ -218,20 +219,20 @@ rf.mu.Unlock()
 
 			<aside class="post-nav">
 
-					<a class="post-nav-next" href="../two-ways-to-write-binary-search/">
+					<a class="post-nav-next" href="/two-ways-to-write-binary-search/">
 						<section class="post-nav-teaser">
 							<i class="icon icon-arrow-left" aria-label="Next post"></i>
 							<h2 class="post-nav-title">Two ways to implement binary search</h2>
-							<p class="post-nav-excerpt">There are only two correct ways to implement binary search…</p>
+							<p class="post-nav-excerpt">There are only two correct ways to implement binary search&hellip;</p>
 							<p class="post-nav-meta"><time datetime="25-01-2021">25 Jan 2021</time></p>
 						</section>
 					</a>
 
-					<a class="post-nav-prev" href="../raft-from-an-engineering-perspective/">
+					<a class="post-nav-prev" href="/raft-from-an-engineering-perspective/">
 						<section class="post-nav-teaser">
 							<i class="icon icon-arrow-right" aria-label="Previous post"></i>
 							<h2 class="post-nav-title">Raft, from an engineering perspective</h2>
-							<p class="post-nav-excerpt">I recently completed an implementation of the Raft consensus algorithm! It is…</p>
+							<p class="post-nav-excerpt">I recently completed an implementation of the Raft consensus algorithm! It is&hellip;</p>
 							<p class="post-nav-meta"><time datetime="16-08-2020">16 Aug 2020</time></p>
 						</section>
 					</a>
@@ -257,9 +258,9 @@ rf.mu.Unlock()
 				<div class="popular-wrapper">
 					<h4 class="popular-title">Topics</h4>
 					<span class="popular-tags post-tags">
-								<a href="../tag/cn/">中文: 2</a>
-								<a href="../tag/raft/">Raft: 2</a>
-								<a href="../tag/gong-zuo/">工作: 1</a>
+								<a href='/tag/cn/'>中文: 2</a>
+								<a href='/tag/raft/'>Raft: 2</a>
+								<a href='/tag/gong-zuo/'>工作: 1</a>
 					</span>
 				</div>
 				<div class="search-result"></div>
@@ -269,14 +270,14 @@ rf.mu.Unlock()
 
 		<div class="nav-footer">
 			<nav class="nav-wrapper" aria-label="Footer">
-				<span class="nav-copy">顿 © 2021  <a class="nav-rss" title="RSS" href="../rss/index.rss" target="_blank"><i class="icon icon-rss" aria-hidden="true"></i></a></span>
-				<span class="nav-credits">Published with <a href="https://ghost.org">Ghost</a> • Theme <a href="https://github.com/zutrinken/attila">Attila</a> • <a class="menu-item js-theme" href="index.html#" data-system="System theme" data-dark="Dark theme" data-light="Light theme"><span class="theme-icon"></span><span class="theme-text">System theme</span> </a> </span>
+				<span class="nav-copy">顿 &copy; 2021  <a class="nav-rss" title="RSS" href="https://www.ditsing.com/rss/" target="_blank"><i class="icon icon-rss" aria-hidden="true"></i></a></span>
+				<span class="nav-credits">Published with <a href="https://ghost.org">Ghost</a> &bull; Theme <a href="https://github.com/zutrinken/attila">Attila</a> &bull; <a class="menu-item js-theme" href="#" data-system="System theme" data-dark="Dark theme" data-light="Light theme"><span class="theme-icon"></span><span class="theme-text">System theme</span> </a> </span>
 			</nav>
 		</div>
 
 	</section>
 
-	<script type="text/javascript" src="../assets/js/script.js?v=e1b21d4a84"></script>
+	<script type="text/javascript" src="/assets/js/script.js?v=af696f601d"></script>
 
 	<script>
   $(document).ready(function () {
@@ -351,3 +352,4 @@ rf.mu.Unlock()
 	
 
 </body>
+</html>
