@@ -16,7 +16,7 @@
     <meta property="og:description" content="Before learning Rust, I never thought about object lifetime and ownership that much. It turns out they have many things to do with memory safety and thread safety. Nowadays I think about lifetime and ownership all the time, even when writing programs in C++. Here is a summary of my" />
     <meta property="og:url" content="https://www.ditsing.com/object-lifetime-and-ownership/" />
     <meta property="article:published_time" content="2021-09-08T22:07:33.000Z" />
-    <meta property="article:modified_time" content="2021-09-09T02:32:03.000Z" />
+    <meta property="article:modified_time" content="2021-09-19T20:56:33.000Z" />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="Object lifetime and ownership" />
     <meta name="twitter:description" content="Before learning Rust, I never thought about object lifetime and ownership that much. It turns out they have many things to do with memory safety and thread safety. Nowadays I think about lifetime and ownership all the time, even when writing programs in C++. Here is a summary of my" />
@@ -47,7 +47,7 @@
     "headline": "Object lifetime and ownership",
     "url": "https://www.ditsing.com/object-lifetime-and-ownership/",
     "datePublished": "2021-09-08T22:07:33.000Z",
-    "dateModified": "2021-09-09T02:32:03.000Z",
+    "dateModified": "2021-09-19T20:56:33.000Z",
     "description": "Before learning Rust, I never thought about object lifetime and ownership that\nmuch. It turns out they have many things to do with memory safety and thread\nsafety. Nowadays I think about lifetime and ownership all the time, even when\nwriting programs in C++. Here is a summary of my thoughts, inspired by Rust, but\napplicable to any programming language.\n\nEach object has a lifetime. An object is alive, when we can access it. In this\narticle, an &quot;object&quot; is a generic term that refers to a &quot;thing&quot; t",
     "mainEntityOfPage": {
         "@type": "WebPage",
@@ -654,7 +654,7 @@
   char content[100];
   size_t len;
 }
-</code></pre><p>In a string, the bytes in memory are usually owned by the string itself. When the string dies, we no longer need the bytes. Thus we usually <em>choose</em> to destroy those bytes when the string goes out of life.</p><p>Both scopes and objects allow nesting. Scopes and objects can own other scopes and objects. Together they form a tree structure of ownership.</p><h3 id="ownership-is-useful">Ownership is useful</h3><p>Let's have a look at a classic example of unsafe memory access.</p><pre><code class="language-c">ShortString *create_empty_short_string() {
+</code></pre><p>In a string, the bytes in memory are usually owned by the string itself. When the string dies, we no longer need the bytes. Thus we usually <em>choose</em> to destroy those bytes when the string goes out of life.</p><p>Both scopes and objects allow nesting. Scopes and objects can own other scopes and objects. Together they form a tree structure of ownership.</p><figure class="kg-card kg-image-card kg-card-hascaption"><figcaption>Ownership tree. Execution is from top to bottom. Squares are objects.</figcaption></figure><h3 id="ownership-is-useful">Ownership is useful</h3><p>Let's have a look at a classic example of unsafe memory access.</p><pre><code class="language-c">ShortString *create_empty_short_string() {
   ShortString str;
   return &amp;str;
 }
