@@ -4,29 +4,25 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
 
-    <title>Object lifetime and threading</title>
+    <title>DOCTYPE and CSS</title>
 
     <link rel="icon" href="/favicon.png" type="image/png" />
-    <link rel="canonical" href="https://www.ditsing.com/object-lifetime-and-threading/" />
+    <link rel="canonical" href="https://www.ditsing.com/doctype-and-css/" />
     <meta name="referrer" content="no-referrer-when-downgrade" />
     
     <meta property="og:site_name" content="顿" />
     <meta property="og:type" content="article" />
-    <meta property="og:title" content="Object lifetime and threading" />
-    <meta property="og:description" content="Last time we talked about object lifetime and ownership. Naturally scopes and objects form a tree hierarchy. The root of the tree is the scope where the program starts executing. Beyond the tree structure, we can pass information between scopes with the help of dynamic lifetime. Dynamic lifetime is hard" />
-    <meta property="og:url" content="https://www.ditsing.com/object-lifetime-and-threading/" />
-    <meta property="article:published_time" content="2021-09-26T03:05:52.000Z" />
-    <meta property="article:modified_time" content="2021-09-27T19:53:48.000Z" />
-    <meta property="article:tag" content="Lifetime" />
-    
+    <meta property="og:title" content="DOCTYPE and CSS" />
+    <meta property="og:description" content="It seems CSS behaves differently with and without the DOCTYPE comment. The HTML for my blog looks like &amp;lt;!DOCTYPE html&amp;gt; &amp;lt;html lang&#x3D;&quot;&quot;&amp;gt; &amp;lt;head&amp;gt;         &amp;lt;meta charset&#x3D;&quot;utf-8&quot; /&amp;gt;         &amp;lt;meta http-equiv&#x3D;&quot;X-UA-Compatible&quot; content&#x3D;&quot;IE&#x3D;edge,chrome&#x3D;1&quot; /&amp;gt; ... &amp;lt;/head&amp;gt; ... &amp;lt;/html&amp;gt;" />
+    <meta property="og:url" content="https://www.ditsing.com/doctype-and-css/" />
+    <meta property="article:published_time" content="2021-09-27T22:14:14.000Z" />
+    <meta property="article:modified_time" content="2021-09-27T22:14:14.000Z" />
     <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="Object lifetime and threading" />
-    <meta name="twitter:description" content="Last time we talked about object lifetime and ownership. Naturally scopes and objects form a tree hierarchy. The root of the tree is the scope where the program starts executing. Beyond the tree structure, we can pass information between scopes with the help of dynamic lifetime. Dynamic lifetime is hard" />
-    <meta name="twitter:url" content="https://www.ditsing.com/object-lifetime-and-threading/" />
+    <meta name="twitter:title" content="DOCTYPE and CSS" />
+    <meta name="twitter:description" content="It seems CSS behaves differently with and without the DOCTYPE comment. The HTML for my blog looks like &amp;lt;!DOCTYPE html&amp;gt; &amp;lt;html lang&#x3D;&quot;&quot;&amp;gt; &amp;lt;head&amp;gt;         &amp;lt;meta charset&#x3D;&quot;utf-8&quot; /&amp;gt;         &amp;lt;meta http-equiv&#x3D;&quot;X-UA-Compatible&quot; content&#x3D;&quot;IE&#x3D;edge,chrome&#x3D;1&quot; /&amp;gt; ... &amp;lt;/head&amp;gt; ... &amp;lt;/html&amp;gt;" />
+    <meta name="twitter:url" content="https://www.ditsing.com/doctype-and-css/" />
     <meta name="twitter:label1" content="Written by" />
     <meta name="twitter:data1" content="Jing Yang 杨靖" />
-    <meta name="twitter:label2" content="Filed under" />
-    <meta name="twitter:data2" content="Lifetime" />
     <meta name="twitter:site" content="@dytsing" />
     
     <script type="application/ld+json">
@@ -48,12 +44,11 @@
         "url": "https://www.ditsing.com/author/ditsing/",
         "sameAs": []
     },
-    "headline": "Object lifetime and threading",
-    "url": "https://www.ditsing.com/object-lifetime-and-threading/",
-    "datePublished": "2021-09-26T03:05:52.000Z",
-    "dateModified": "2021-09-27T19:53:48.000Z",
-    "keywords": "Lifetime",
-    "description": "Last time we talked about object lifetime and ownership. Naturally scopes and\nobjects form a tree hierarchy. The root of the tree is the scope where the\nprogram starts executing. Beyond the tree structure, we can pass information\nbetween scopes with the help of dynamic lifetime. Dynamic lifetime is hard to\nmanage and is also the #1 source of bugs (&quot;use after free&quot;) in C programs. The\nconcept of ownership can simplify many useful cases of dynamic lifetime.\n\nThreads\nThreads make lifetime more comp",
+    "headline": "DOCTYPE and CSS",
+    "url": "https://www.ditsing.com/doctype-and-css/",
+    "datePublished": "2021-09-27T22:14:14.000Z",
+    "dateModified": "2021-09-27T22:14:14.000Z",
+    "description": "It seems CSS behaves differently with and without the DOCTYPE comment. The HTML\nfor my blog looks like\n\n&lt;!DOCTYPE html&gt;\n&lt;html lang&#x3D;&quot;&quot;&gt;\n&lt;head&gt;\n        &lt;meta charset&#x3D;&quot;utf-8&quot; /&gt;\n        &lt;meta http-equiv&#x3D;&quot;X-UA-Compatible&quot; content&#x3D;&quot;IE&#x3D;edge,chrome&#x3D;1&quot; /&gt;\n...\n&lt;/head&gt;\n...\n&lt;/html&gt;\n\nAnd the page renders fine.\n\nHowever, if I remove the !DOCTYPE comment from the header, something odd\nhappens: the social network icons at the bottom of my page float up a little\nbit.\n\nI really don&#x27;t know what is happening.",
     "mainEntityOfPage": {
         "@type": "WebPage",
         "@id": "https://www.ditsing.com/"
@@ -641,15 +636,23 @@
         <article class="post">
 
             <header class="post-header">
-                <h1 class="post-title">Object lifetime and threading</h1>
+                <h1 class="post-title">DOCTYPE and CSS</h1>
                 <section class="post-meta">
                     Jing Yang 杨靖 -
-                    <time class="post-date" datetime="2021-09-25">25 Sep 2021</time>
+                    <time class="post-date" datetime="2021-09-27">27 Sep 2021</time>
                 </section>
             </header>
             <section class="post-content">
 
-                <p>Last time we talked about object lifetime and ownership. Naturally scopes and objects form a tree hierarchy. The root of the tree is the scope where the program starts executing. Beyond the tree structure, we can pass information between scopes with the help of dynamic lifetime. Dynamic lifetime is hard to manage and is also the #1 source of bugs ("use after free") in C programs. The concept of ownership can simplify many useful cases of dynamic lifetime.</p><h3 id="threads"><strong>Threads</strong></h3><p>Threads make lifetime more complex. We now have several starting points where threads might start executing independently. No assumption can be made about the progress of each thread. At one point in thread A, there is usually no guarantee whether an object in thread B has been initialized/destroyed or not. That makes data sharing between threads extremely difficult. As it turns out, making sure the data is alive while being shared is another hard problem to solve. Doing it wrong, our C program crashes and throws "core dumps" at us. There are many clever ways to guarantee liveness. But we are more interested in the foolproof ways that take advantage of single ownership.</p><h3 id="copy-instead-of-share"><strong>Copy instead of share</strong></h3><p>Sharing implies more than one owner. Multiple owners are hard to coordinate with. Instead of sharing, we make copies of the data for each of the interested parties. Those copies will have independent lifetimes, each owned by one thread. That simplifies the situation because each copy has a single owner.</p><p>In the case of sharing between two parties, the actual copying can be saved if the source (initiator) of sharing does not need the object anymore. Then sharing is reduced to a simple "transfer ownership" operation.</p><p>There are other ways of describing this strategy. We can think of it as sending a message. The source of sharing makes a copy of the shared data, and sends it to the target as a message. A message, by definition, goes out of control of the source  after being sent. The target owns the message after receiving it. An RPC request from the source to the target achieves the same goal.</p><p>The famous paper <em>Communicate Sequential Processes</em> proposed a similar strategy. Shared data is considered an <em>output</em> of the source, and an <em>input</em> of the target. An output cannot be modified after the source outputs it. An input is solely owned by the target thread. To some extent, the input/output metaphor is similar to the messaging metaphor.</p><p>By avoiding sharing, we avoid the difficulties of managing shared lifetimes. The drawbacks are more memory usage and more CPU time to copy data.</p><h3 id="reference-counting"><strong>Reference counting</strong></h3><p>Reference counting is widely adopted as a native feature in many programming languages. For each piece of data, we keep a count of how many outstanding references there are. The data dies when there are no more references out there.</p><p>The advantage of reference counting is that it can be fully automatic. The programmer no longer needs to manage lifetime manually. The drawback is that it is usually unpredictable when the underlying object dies, or who will end up cleaning up the object. This can be a problem in languages that use RAII extensively like C++. Sometimes it is important to <em>not</em> run certain deconstructors on certain threads.</p><p>Speaking of C++, <code>shared_ptr</code> is the tool that implemented the reference counting strategy. <code>unique_ptr</code> is often listed side-by-side with <code>shared_ptr</code>. They happen to correspond to the two strategies we talked about: <code>unique_ptr</code> is about message passing, while <code>shared_ptr</code> is about data sharing.</p><h3 id="carrier"><strong>Carrier</strong></h3><p><a href="https://docs.rs/more-sync/0.1.2/more_sync/struct.Carrier.html">The Carrier pattern</a> improves upon reference counting and addresses the deconstruction problem. There is a <code>Carrier&lt;T&gt;</code> that owns an instance of any <code>T</code>. The carrier distributes references to the owned instance. The references can be passed around and maybe used in other threads. When the end of life comes, the carrier stops producing references and waits for all references it gave out. After all references are dropped, the instance of <code>T</code> is no longer shared, but solely owned by the carrier. We can then drop the instance or run cleanups that require an owned instance.</p><h3 id="careful-planning"><strong>Careful planning</strong></h3><p>There are really clever ways to manage object lifetime by planning very carefully. For example, for each function, we should be very clear about who is responsible for cleaning up the objects involved in the function call. While it can be done, I would not recommend implementing those cleverness regularly. Try to fit your use cases into one of the regular ones. If nothing works, maybe you should roll your own.</p><h3 id="thread-safety"><strong>Thread Safety</strong></h3><p>Note none of these strategies help with thread safety of the object being shared. Thread safety is about</p><ul><li>If one thread reads the shared data, could it see partially updated / invalid data? Could the data change while the thread is executing?</li><li>If one thread writes the shared data, could its writes be observed partially by other threads? Could its writes be overridden partially by other threads?</li></ul><p>Even the copying strategy is vulnerable to objects that are not thread safe. That is because objects can have references to other objects that are not deeply copied. The inner objects are still shared by all threads, although each of the outer objects has only one owner.</p><p>Generally speaking, an object that does not have mutable internal state is safe to share between threads. Any immutable reference to such objects is safe to send to another thread. If you are familiar with Rust, I believe those are the definitions of <code>Sync</code> and <code>Send</code>.</p><h3 id="conclusion"><strong>Conclusion</strong></h3><p>Managing lifetimes across threads is hard. There are clever ways to coordinate between threads. By preferring single ownership, we found three simple but powerful strategies for special use cases.</p>
+                <p>It seems CSS behaves differently with and without the <code>DOCTYPE</code> comment. The HTML for my blog looks like</p><pre><code class="language-HTML">&lt;!DOCTYPE html&gt;
+&lt;html lang=""&gt;
+&lt;head&gt;
+        &lt;meta charset="utf-8" /&gt;
+        &lt;meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /&gt;
+...
+&lt;/head&gt;
+...
+&lt;/html&gt;</code></pre><p>And the page renders fine.</p><p>However, if I remove the <code>!DOCTYPE</code> comment from the header, something odd happens: the social network icons at the bottom of my page float up a little bit.</p><figure class="kg-card kg-image-card"></figure><p>I really don't know what is happening.</p>
 
             </section>
 

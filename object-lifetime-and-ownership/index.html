@@ -9,7 +9,7 @@
 	<meta name="HandheldFriendly" content="True" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-	<link rel="stylesheet" type="text/css" href="/assets/css/style.css?v=af6ab3a260" />
+	<link rel="stylesheet" type="text/css" href="/assets/css/style.css?v=8e64922ef8" />
 
 	<script>
 			var siteUrl = 'https://www.ditsing.com';
@@ -41,12 +41,16 @@
     <meta property="og:url" content="https://www.ditsing.com/object-lifetime-and-ownership/" />
     <meta property="article:published_time" content="2021-09-08T22:07:33.000Z" />
     <meta property="article:modified_time" content="2021-09-19T20:56:33.000Z" />
+    <meta property="article:tag" content="Lifetime" />
+    
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="Object lifetime and ownership" />
     <meta name="twitter:description" content="Before learning Rust, I never thought about object lifetime and ownership that much. It turns out they have many things to do with memory safety and thread safety. Nowadays I think about lifetime and ownership all the time, even when writing programs in C++. Here is a summary of my" />
     <meta name="twitter:url" content="https://www.ditsing.com/object-lifetime-and-ownership/" />
     <meta name="twitter:label1" content="Written by" />
     <meta name="twitter:data1" content="Jing Yang 杨靖" />
+    <meta name="twitter:label2" content="Filed under" />
+    <meta name="twitter:data2" content="Lifetime" />
     <meta name="twitter:site" content="@dytsing" />
     
     <script type="application/ld+json">
@@ -72,6 +76,7 @@
     "url": "https://www.ditsing.com/object-lifetime-and-ownership/",
     "datePublished": "2021-09-08T22:07:33.000Z",
     "dateModified": "2021-09-19T20:56:33.000Z",
+    "keywords": "Lifetime",
     "description": "Before learning Rust, I never thought about object lifetime and ownership that\nmuch. It turns out they have many things to do with memory safety and thread\nsafety. Nowadays I think about lifetime and ownership all the time, even when\nwriting programs in C++. Here is a summary of my thoughts, inspired by Rust, but\napplicable to any programming language.\n\nEach object has a lifetime. An object is alive, when we can access it. In this\narticle, an &quot;object&quot; is a generic term that refers to a &quot;thing&quot; t",
     "mainEntityOfPage": {
         "@type": "WebPage",
@@ -84,7 +89,7 @@
     <link rel="alternate" type="application/rss+xml" title="顿" href="https://www.ditsing.com/rss/" />
 </head>
 
-<body class="post-template">
+<body class="post-template tag-lifetime">
 
 	<div class="nav-header">
 		<nav class="nav-wrapper" aria-label="Main">
@@ -153,6 +158,7 @@
 	<div class="inner">
 		<span class="post-info">
 			<span class="post-type">Article</span>
+			<span class="post-count">Lifetime</span>
 		</span>
 		<h1 class="post-title">Object lifetime and ownership</h1>
 		<div class="post-meta">
@@ -167,7 +173,7 @@
 </header>
 
 <main class="content" role="main">
-	<article class="post no-image">
+	<article class="post tag-lifetime no-image">
 		<div class="inner">
 
 			<section class="post-content">
@@ -244,6 +250,10 @@ str-&gt;len;  // boom! No longer safe to access str.
 					</a>
 				</div>
 
+				<aside class="post-tags">
+					<span class="post-info-label">Topic</span>
+					<a href="/tag/lifetime/">Lifetime</a>
+				</aside>
 
 			</section>
 
@@ -297,6 +307,7 @@ str-&gt;len;  // boom! No longer safe to access str.
 					<span class="popular-tags post-tags">
 								<a href='/tag/cn/'>中文: 2</a>
 								<a href='/tag/raft/'>Raft: 2</a>
+								<a href='/tag/lifetime/'>Lifetime: 2</a>
 								<a href='/tag/gong-zuo/'>工作: 1</a>
 					</span>
 				</div>
@@ -314,7 +325,7 @@ str-&gt;len;  // boom! No longer safe to access str.
 
 	</section>
 
-	<script type="text/javascript" src="/assets/js/script.js?v=af6ab3a260"></script>
+	<script type="text/javascript" src="/assets/js/script.js?v=8e64922ef8"></script>
 
 	<script>
   $(document).ready(function () {
