@@ -5,7 +5,7 @@
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-	<title>新博客 New Blog</title>
+	<title>Destruction And Threads</title>
 	<meta name="HandheldFriendly" content="True" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
@@ -30,27 +30,23 @@
 	</script>
 
 	<link rel="icon" href="/favicon.png" type="image/png" />
-    <link rel="canonical" href="https://www.ditsing.com/xin-bo-ke/" />
+    <link rel="canonical" href="https://www.ditsing.com/destruction-and-threads/" />
     <meta name="referrer" content="no-referrer-when-downgrade" />
-    <link rel="amphtml" href="https://www.ditsing.com/xin-bo-ke/amp/" />
+    <link rel="amphtml" href="https://www.ditsing.com/destruction-and-threads/amp/" />
     
     <meta property="og:site_name" content="顿" />
     <meta property="og:type" content="article" />
-    <meta property="og:title" content="新博客 New Blog" />
-    <meta property="og:description" content="打算写点什么 Write random stuff" />
-    <meta property="og:url" content="https://www.ditsing.com/xin-bo-ke/" />
-    <meta property="article:published_time" content="2020-08-15T15:13:00.000Z" />
-    <meta property="article:modified_time" content="2020-12-24T17:25:45.000Z" />
-    <meta property="article:tag" content="中文" />
-    
+    <meta property="og:title" content="Destruction And Threads" />
+    <meta property="og:description" content="How should destruction work in a multi-threaded environment?" />
+    <meta property="og:url" content="https://www.ditsing.com/destruction-and-threads/" />
+    <meta property="article:published_time" content="2022-01-30T05:59:28.000Z" />
+    <meta property="article:modified_time" content="2022-01-30T06:21:39.000Z" />
     <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="新博客 New Blog" />
-    <meta name="twitter:description" content="打算写点什么 Write random stuff" />
-    <meta name="twitter:url" content="https://www.ditsing.com/xin-bo-ke/" />
+    <meta name="twitter:title" content="Destruction And Threads" />
+    <meta name="twitter:description" content="How should destruction work in a multi-threaded environment?" />
+    <meta name="twitter:url" content="https://www.ditsing.com/destruction-and-threads/" />
     <meta name="twitter:label1" content="Written by" />
     <meta name="twitter:data1" content="Jing Yang 杨靖" />
-    <meta name="twitter:label2" content="Filed under" />
-    <meta name="twitter:data2" content="中文" />
     <meta name="twitter:site" content="@dytsing" />
     
     <script type="application/ld+json">
@@ -72,12 +68,11 @@
         "url": "https://www.ditsing.com/author/ditsing/",
         "sameAs": []
     },
-    "headline": "新博客 New Blog",
-    "url": "https://www.ditsing.com/xin-bo-ke/",
-    "datePublished": "2020-08-15T15:13:00.000Z",
-    "dateModified": "2020-12-24T17:25:45.000Z",
-    "keywords": "中文",
-    "description": "打算写点什么\n\nWrite random stuff",
+    "headline": "Destruction And Threads",
+    "url": "https://www.ditsing.com/destruction-and-threads/",
+    "datePublished": "2022-01-30T05:59:28.000Z",
+    "dateModified": "2022-01-30T06:21:39.000Z",
+    "description": "How should destruction work in a multi-threaded environment?",
     "mainEntityOfPage": {
         "@type": "WebPage",
         "@id": "https://www.ditsing.com/"
@@ -111,7 +106,7 @@
 </style>
 </head>
 
-<body class="post-template tag-cn">
+<body class="post-template">
 
 	<div class="nav-header">
 		<nav class="nav-wrapper" aria-label="Main">
@@ -180,50 +175,45 @@
 	<div class="inner">
 		<span class="post-info">
 			<span class="post-type">Article</span>
-			<span class="post-count">中文</span>
 		</span>
-		<h1 class="post-title">新博客 New Blog</h1>
+		<h1 class="post-title">Destruction And Threads</h1>
 		<div class="post-meta">
 			<div class="post-meta-avatars">
 					<figure class="post-meta-avatar avatar">
 					</figure>
 			</div>
 			<h4 class="post-meta-author"><a href="/author/ditsing/">Jing Yang 杨靖</a></h4>
-			<time datetime="15-08-2020">15 Aug 2020</time> &bull; 1 min read
+			<time datetime="29-01-2022">29 Jan 2022</time> &bull; 2 min read
 		</div>
 	</div>
 </header>
 
 <main class="content" role="main">
-	<article class="post tag-cn no-image">
+	<article class="post no-image">
 		<div class="inner">
 
 			<section class="post-content">
-				<p>打算写点什么</p><p>Write random stuff</p>
+				<p>How should destruction work in a multi-threaded environment?</p><figure class="kg-card kg-image-card kg-card-hascaption"><img src="https://www.ditsing.com/content/images/2022/01/Destruction-And-Threads-second.png" class="kg-image" alt><figcaption>Object Lifetime</figcaption></figure><p>When an object is first created, it is accessible by just one thread. The creator thread (T1) initializes its members, then shares the object with other threads. From that point on, each thread executes at their own pace. Eventually the object reaches its end of life and should be destroyed. An object can be destroyed at most once, typically by one thread. No parallelism is needed here. T2 ended up being the one that is responsible. T2 destructs members of the object, and then releases the memory.</p><p>The symmetry is natural and obvious: created once, destroyed once; created by one thread, destroyed by one thread.</p><p>The asymmetry is also there. The tasks of T1 and T2 are different. When T1 creates the object, it knows that only itself can access the object it just created. However when T2 is about to destroy the object, more than one thread has access to it. For T2 to do its job, it must somehow make sure other threads have stopped using the object. The mechanism can be</p><ol><li>A global shutdown signal that is sent to all threads (<code>shutdown_condvar</code>).</li><li>A shared pointer that assigns the duty of destroying an object to the last bearer of the object (<code>shared_ptr</code>).</li><li>A state of the object itself that denotes an invalid state (<code>weak_ptr</code>) so that T2 can destroy the object at any time.</li><li>A ref count included in the object itself, and a blocking mechanism to wait for that count to reach zero.</li></ol><p>My favorite approach is #4 because it is most universal, and has deterministic runtime behavior when compared with <code>shared_ptr</code>. We know upfront that T2 is the thread that destroys the object, not a latency sensitive thread or a thread that won't finish running a time consuming task in 10 minutes.</p><figure class="kg-card kg-image-card kg-card-hascaption"><img src="https://www.ditsing.com/content/images/2022/01/Destruction-And-Threads-first-1.png" class="kg-image" alt><figcaption>Notify and Destroy</figcaption></figure><p>In this approach, T2 would usually need to let other threads know that they must give up the object. It could notify other threads by either changing a boolean that other threads are watching, or sending a message to all holders of the object. Then T2 must wait for the ref count to reach zero (or one if T2 itself is counted). After that it can safely destroy the object and release the memory.</p><p>The waiting part is unavoidable. T2 must release the memory, and no more than one thread can release the memory. Even if all operations before releasing the memory are thread safe, we still need to have one thread do the last thing, and that thread has to wait.</p><p>There is an alternative. We could just not release the memory at all. The object is safe to use all the way to the end of the process. This is the easiest thing to do, but does put pressure on memory usage.</p>
 			</section>
 
 			<section class="post-footer">
 
 				<div class="post-share">
 					<span class="post-info-label">Share</span>
-					<a title="Twitter" aria-label="Twitter" class="twitter" href="https://twitter.com/share?text=新博客 New Blog&url=https://www.ditsing.com/xin-bo-ke/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+					<a title="Twitter" aria-label="Twitter" class="twitter" href="https://twitter.com/share?text=Destruction And Threads&url=https://www.ditsing.com/destruction-and-threads/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
 						<i class="icon icon-twitter" aria-hidden="true"></i>
 					</a>
-					<a title="Facebook" aria-label="Facebook" class="facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://www.ditsing.com/xin-bo-ke/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+					<a title="Facebook" aria-label="Facebook" class="facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://www.ditsing.com/destruction-and-threads/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
 						<i class="icon icon-facebook" aria-hidden="true"></i>
 					</a>
-					<a title="LinkedIn" aria-label="LinkedIn" class="linkedin" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https://www.ditsing.com/xin-bo-ke//&amp;title=新博客 New Blog" onclick="window.open(this.href, 'linkedin-share', 'width=930,height=720');return false;">
+					<a title="LinkedIn" aria-label="LinkedIn" class="linkedin" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https://www.ditsing.com/destruction-and-threads//&amp;title=Destruction And Threads" onclick="window.open(this.href, 'linkedin-share', 'width=930,height=720');return false;">
 						<i class="icon icon-linkedin" aria-hidden="true"></i>
 					</a>
-					<a title="Email" aria-label="Email" class="email" href="mailto:?subject=新博客 New Blog&amp;body=https://www.ditsing.com/xin-bo-ke/">
+					<a title="Email" aria-label="Email" class="email" href="mailto:?subject=Destruction And Threads&amp;body=https://www.ditsing.com/destruction-and-threads/">
 						<i class="icon icon-mail" aria-hidden="true"></i>
 					</a>
 				</div>
 
-				<aside class="post-tags">
-					<span class="post-info-label">Topic</span>
-					<a href="/tag/cn/">中文</a>
-				</aside>
 
 			</section>
 
@@ -236,15 +226,15 @@
 
 			<aside class="post-nav">
 
-					<a class="post-nav-next" href="/wen-hua-bu-gua/">
+
+					<a class="post-nav-prev" href="/doctype-and-css/">
 						<section class="post-nav-teaser">
-							<i class="icon icon-arrow-left" aria-label="Next post"></i>
-							<h2 class="post-nav-title">文化不适</h2>
-							<p class="post-nav-excerpt">标题是从 Culture Fit 生硬翻译过来的。&hellip;</p>
-							<p class="post-nav-meta"><time datetime="15-08-2020">15 Aug 2020</time></p>
+							<i class="icon icon-arrow-right" aria-label="Previous post"></i>
+							<h2 class="post-nav-title">DOCTYPE and CSS</h2>
+							<p class="post-nav-excerpt">It seems CSS behaves differently with and without the DOCTYPE comment&hellip;</p>
+							<p class="post-nav-meta"><time datetime="27-09-2021">27 Sep 2021</time></p>
 						</section>
 					</a>
-
 				<div class="clear"></div>
 			</aside>
 
