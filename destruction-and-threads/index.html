@@ -9,7 +9,7 @@
 	<meta name="HandheldFriendly" content="True" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-	<link rel="stylesheet" type="text/css" href="/assets/css/style.css?v=871a1524a0" />
+	<link rel="stylesheet" type="text/css" href="/assets/css/style.css?v=3c497894cf" />
 
 	<script>
 			var siteUrl = 'https://www.ditsing.com';
@@ -40,7 +40,7 @@
     <meta property="og:description" content="How should destruction work in a multi-threaded environment?" />
     <meta property="og:url" content="https://www.ditsing.com/destruction-and-threads/" />
     <meta property="article:published_time" content="2022-01-30T05:59:28.000Z" />
-    <meta property="article:modified_time" content="2022-01-30T13:59:52.000Z" />
+    <meta property="article:modified_time" content="2022-02-01T00:01:08.000Z" />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="Destruction and threads" />
     <meta name="twitter:description" content="How should destruction work in a multi-threaded environment?" />
@@ -71,7 +71,7 @@
     "headline": "Destruction and threads",
     "url": "https://www.ditsing.com/destruction-and-threads/",
     "datePublished": "2022-01-30T05:59:28.000Z",
-    "dateModified": "2022-01-30T13:59:52.000Z",
+    "dateModified": "2022-02-01T00:01:08.000Z",
     "description": "How should destruction work in a multi-threaded environment?",
     "mainEntityOfPage": {
         "@type": "WebPage",
@@ -193,7 +193,7 @@
 		<div class="inner">
 
 			<section class="post-content">
-				<p>How should destruction work in a multi-threaded environment? Let's take a look at the lifetime of an object that is used by multiple threads.</p><figure class="kg-card kg-image-card kg-card-hascaption"><img src="https://www.ditsing.com/content/images/2022/01/Destruction-And-Threads-second.png" class="kg-image" alt><figcaption>Object Lifetime</figcaption></figure><p>When the object is first created, it is accessible by just one thread -- the creator thread (T1). T1 initializes the object and its members, then shares the object with other threads. From that point on, each thread executes at their own pace. Eventually the object reaches its end of life and should be destroyed. An object can be destroyed at most once, typically by one thread. No parallelism is needed here. Let's assume T2 ended up being the one that is responsible. T2 destructs members of the object, and then releases the memory.</p><p>The symmetry is natural and obvious: created once, destroyed once; created by one thread, destroyed by one thread.</p><p>The asymmetry is also there. The tasks of T1 and T2 are different. When T1 creates the object, it knows that only itself can access the object it just created. However when T2 is about to destroy the object, more than one thread has access to it. For T2 to do its job, it must somehow make sure other threads have stopped using the object. The mechanism can be</p><ol><li>A global shutdown signal that is sent to all threads (<code>shutdown_condvar</code>).</li><li>A shared pointer that assigns the duty of destroying an object to the last bearer of the object (<code>shared_ptr</code>).</li><li>A state of the object itself that denotes an invalid state (<code>weak_ptr</code>) so that T2 can destroy the object at any time.</li><li>A ref count included in the object itself, and a blocking mechanism to wait for that count to reach zero.</li></ol><p>My favorite approach is #4 because it is most universal, and has deterministic runtime behavior when compared with <code>shared_ptr</code>. We know upfront that T2 is the thread that destroys the object, not a latency sensitive thread or a thread that won't finish running a time consuming task in 10 minutes.</p><figure class="kg-card kg-image-card kg-card-hascaption"><img src="https://www.ditsing.com/content/images/2022/01/Destruction-And-Threads-first-1.png" class="kg-image" alt><figcaption>Notify and Destroy</figcaption></figure><p>In this approach, T2 would usually need to let other threads know that they must give up the object. It could notify other threads by either changing a boolean that other threads are watching, or sending a message to all holders of the object. Then T2 must wait for the ref count to reach zero (or one if T2 itself is counted). After that it can safely destroy the object and release the memory.</p><p>The waiting part is unavoidable. T2 must release the memory, and no more than one thread can release the memory. Even if all operations before releasing the memory are thread safe, we still need to have one thread do the last thing, and that thread has to wait.</p><p>There is an alternative. We could just not release the memory at all. The object is safe to use all the way to the end of the process. This is the easiest thing to do, but does put pressure on memory usage.</p>
+				<p>In object-oriented programming, the life of an object starts with construction, and ends with destruction. The idea is that before an object can be used, we must allocate memory for it, initialize its members, then initialize itself. Similarly, if an object is no longer needed, we must return its resources and release the memory. It sounds simple enough, but becomes quite complicated in a multi-threaded environment.</p><p>Let's take a look at the lifetime of an object that is used by multiple threads.</p><figure class="kg-card kg-image-card kg-card-hascaption"><img src="https://www.ditsing.com/content/images/2022/01/Destruction-And-Threads-second.png" class="kg-image" alt><figcaption>Object Lifetime</figcaption></figure><p>When the object is first created, it is accessible by just one thread -- the creator thread (T1). T1 initializes the object and its members, then shares the object with other threads. From that point on, each thread executes at their own pace. Eventually the object reaches its end of life and should be destroyed. An object can be destroyed at most once, typically by one thread. No parallelism is needed here. Let's assume T2 ended up being the one that is responsible. T2 destructs members of the object, and then releases the memory.</p><p>The symmetry between construction and deconstruction is natural and obvious: created once, destroyed once; created by one thread, destroyed by one thread.</p><p>The asymmetry is also there. The tasks of T1 and T2 are different. When T1 creates the object, it knows that only itself can access the object it just created. However when T2 is about to destroy the object, more than one thread has access to it. For T2 to do its job, it must somehow make sure other threads have stopped using the object. The mechanism can be</p><ol><li>A global shutdown signal that is sent to all threads (<code>shutdown_condvar</code>).</li><li>A shared pointer that assigns the duty of destroying an object to the last bearer of the object (<code>shared_ptr</code>).</li><li>A state of the object itself that denotes an invalid state (<code>weak_ptr</code>) so that T2 can destroy the object at any time.</li><li>A ref count included in the object itself, and a blocking mechanism to wait for that count to reach zero.</li></ol><p>My favorite approach is #4 because it is most universal, and has deterministic runtime behavior when compared with <code>shared_ptr</code>. We know upfront that T2 is the thread that destroys the object, not a latency sensitive thread or a thread that won't finish running a time consuming task in 10 minutes.</p><figure class="kg-card kg-image-card kg-card-hascaption"><img src="https://www.ditsing.com/content/images/2022/01/Destruction-And-Threads-first-1.png" class="kg-image" alt><figcaption>Notify and Destroy</figcaption></figure><p>In this approach, T2 would usually need to let other threads know that they must give up the object. It could notify other threads by either changing a boolean that other threads are watching, or sending a message to all holders of the object. Then T2 must wait for the ref count to reach zero (or one if T2 itself is counted). After that it can safely destroy the object and release the memory.</p><p>The waiting part is unavoidable. T2 must release the memory, and no more than one thread can release the memory. Even if all operations before releasing the memory are thread safe, we still need to have one thread do the last thing, and that thread has to wait.</p><p>There is an alternative. We could just not release the memory at all. The object is safe to use all the way to the end of the process. This is the easiest thing to do, but does put pressure on memory usage.</p>
 			</section>
 
 			<section class="post-footer">
@@ -277,7 +277,7 @@
 
 	</section>
 
-	<script type="text/javascript" src="/assets/js/script.js?v=871a1524a0"></script>
+	<script type="text/javascript" src="/assets/js/script.js?v=3c497894cf"></script>
 
 	<script>
   $(document).ready(function () {
