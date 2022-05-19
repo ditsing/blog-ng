@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+	<title>Destruction that works with multi-threads</title>
+	<meta name="HandheldFriendly" content="True" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<link rel="stylesheet" type="text/css" href="/assets/css/style.css?v=b23e0a0900" />
+
+	<script>
+			var siteUrl = 'https://www.ditsing.com';
+	</script>
+
+	<script>
+			var localTheme = localStorage.getItem('attila_theme');
+			switch (localTheme) {
+					case 'dark':
+							document.documentElement.classList.add('theme-dark');
+							break;
+					case 'light':
+							document.documentElement.classList.add('theme-light');
+							break;
+					default:
+							break;
+			}
+	</script>
+
+
+
+			<style>
+				.theme-dark:root {
+				  --ghost-accent-color: #ff6633;
+				}
+				@media (prefers-color-scheme: dark) {
+				  html:not(.theme-light):root {
+				    --ghost-accent-color: #ff6633;
+				  }
+				}
+			</style>
+
+	<meta name="description" content="How should destruction work in a multi-threaded environment?" />
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    <link rel="canonical" href="https://www.ditsing.com/destruction-that-works-with-multi-threads/" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    <link rel="amphtml" href="https://www.ditsing.com/destruction-that-works-with-multi-threads/amp/" />
+    
+    <meta property="og:site_name" content="顿" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Destruction that works with multi-threads" />
+    <meta property="og:description" content="How should destruction work in a multi-threaded environment?" />
+    <meta property="og:url" content="https://www.ditsing.com/destruction-that-works-with-multi-threads/" />
+    <meta property="article:published_time" content="2022-01-30T05:59:28.000Z" />
+    <meta property="article:modified_time" content="2022-02-28T23:10:53.000Z" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Destruction that works with multi-threads" />
+    <meta name="twitter:description" content="How should destruction work in a multi-threaded environment?" />
+    <meta name="twitter:url" content="https://www.ditsing.com/destruction-that-works-with-multi-threads/" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Jing Yang 杨靖" />
+    <meta name="twitter:site" content="@dytsing" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "顿",
+        "url": "https://www.ditsing.com/",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://www.ditsing.com/content/images/2021/01/hammer_transparent.png"
+        }
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Jing Yang 杨靖",
+        "url": "https://www.ditsing.com/author/ditsing/",
+        "sameAs": []
+    },
+    "headline": "Destruction that works with multi-threads",
+    "url": "https://www.ditsing.com/destruction-that-works-with-multi-threads/",
+    "datePublished": "2022-01-30T05:59:28.000Z",
+    "dateModified": "2022-02-28T23:10:53.000Z",
+    "description": "How should destruction work in a multi-threaded environment?",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://www.ditsing.com/"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 4.47" />
+    <link rel="alternate" type="application/rss+xml" title="顿" href="https://www.ditsing.com/rss/" />
+    
+    <script defer src="/public/cards.min.js?v=b23e0a0900"></script><style>:root {--ghost-accent-color: #15171A;}</style>
+    <link rel="stylesheet" type="text/css" href="/public/cards.min.css?v=b23e0a0900">
+</head>
+
+<body class="post-template">
+
+	<div class="nav-header">
+		<nav class="nav-wrapper" aria-label="Main">
+				<span class="logo">
+					<a href="https://www.ditsing.com" title="Home"><img src="https://www.ditsing.com/content/images/2021/01/hammer_transparent.png" alt="Logo" /></a>
+				</span>
+				<ul>
+		<li class="nav-home"><a href="https://www.ditsing.com/"><span>Home</span></a></li>
+		<li class="nav-the-author"><a href="https://www.ditsing.com/author/"><span>The Author</span></a></li>
+		<li class="nav-zhong-wen"><a href="https://www.ditsing.com/tag/cn/"><span>中文</span></a></li>
+		<li class="nav-jian-zheng"><a href="https://www.ditsing.com/tag/jian-zheng/"><span>键政</span></a></li>
+		<li class="nav-guan-yu"><a href="https://www.ditsing.com/about-me/"><span>关于</span></a></li>
+		<li class="nav-jiu-bo"><a href="http://old.ditsing.com"><span>旧博</span></a></li>
+</ul>
+
+				<ul class="nav-meta">
+  <li class="nav-twitter">
+    <a aria-label="Twitter" href="https://twitter.com/dytsing" title="@dytsing" target="_blank">
+      <i class="icon icon-twitter" aria-hidden="true"></i>
+      <span>@dytsing</span>
+    </a>
+  </li>
+  <li class="nav-github">
+    <a aria-label="GitHub" href="https://github.com/ditsing" title="" target="_blank">
+      <i class="icon icon-github" aria-hidden="true"></i>
+      <span></span>
+    </a>
+  </li>
+  <li class="nav-search" style="display: none;">
+    <a title="Search">
+      <i class="icon icon-search" aria-hidden="true"></i>
+      <span>Search</span>
+    </a>
+  </li>
+  <li class="nav-rss">
+    <a title="RSS" href="https://www.ditsing.com/rss/" target="_blank">
+      <i class="icon icon-rss" aria-hidden="true"></i>
+    </a>
+  </li>
+  <!--
+    <li class="nav-subscribe">
+      <a href="#/portal">Subscribe</a>
+    </li>
+  -->
+</ul>
+		</nav>
+
+		<div class="nav-wrapper-control">
+			<div class="inner">
+				<a class="nav-menu" role="button"><i class="icon icon-menu" aria-hidden="true"></i>Menu</a>
+				<a class="nav-search" style="display: none;" title="Search" role="button"><i class="icon icon-search" aria-hidden="true"></i></a>
+			</div>
+		</div>
+	</div>
+	<div class="nav-close" role="button" aria-label="Close"></div>
+
+	<section class="page-wrapper">
+
+		
+
+<div class="progress-container">
+	<span class="progress-bar"></span>
+</div>
+
+<header class="post-header ">
+	<div class="inner">
+		<span class="post-info">
+			<span class="post-type">Article</span>
+		</span>
+		<h1 class="post-title">Destruction that works with multi-threads</h1>
+		<div class="post-meta">
+			<div class="post-meta-avatars">
+					<figure class="post-meta-avatar avatar">
+					</figure>
+			</div>
+			<h4 class="post-meta-author"><a href="/author/ditsing/">Jing Yang 杨靖</a></h4>
+			<time datetime="29-01-2022">29 Jan 2022</time> &bull; 2 min read
+		</div>
+	</div>
+</header>
+
+<main class="content" role="main">
+	<article class="post no-image">
+		<div class="inner">
+
+			<section class="post-content">
+				<p>In object-oriented programming, the life of an object starts with construction, and ends with destruction. The idea is that before an object can be used, we must allocate memory for it, initialize its members, then initialize itself. Similarly, if an object is no longer needed, we must return its resources and release the memory. It sounds simple enough, but becomes quite complicated in a multi-threaded environment.</p><p>Let's take a look at the lifetime of an object that is used by multiple threads.</p><figure class="kg-card kg-image-card kg-card-hascaption"><img src="https://www.ditsing.com/content/images/2022/01/Destruction-And-Threads-second.png" class="kg-image" alt loading="lazy" width="1656" height="828" srcset="https://www.ditsing.com/content/images/size/w600/2022/01/Destruction-And-Threads-second.png 600w, https://www.ditsing.com/content/images/size/w1000/2022/01/Destruction-And-Threads-second.png 1000w, https://www.ditsing.com/content/images/size/w1600/2022/01/Destruction-And-Threads-second.png 1600w, https://www.ditsing.com/content/images/2022/01/Destruction-And-Threads-second.png 1656w" sizes="(min-width: 720px) 720px"><figcaption>Object Lifetime</figcaption></figure><p>When the object is first created, it is accessible by just one thread -- the creator thread (T1). T1 initializes the object and its members, then shares the object with other threads. From that point on, each thread executes at their own pace. Eventually the object reaches its end of life and should be destroyed. An object can be destroyed at most once, typically by one thread. No parallelism is needed here. Let's assume T2 ended up being the one that is responsible. T2 destructs members of the object, and then releases the memory.</p><p>The symmetry between construction and deconstruction is natural and obvious: created once, destroyed once; created by one thread, destroyed by one thread.</p><p>The asymmetry is also there. The tasks of T1 and T2 are different. When T1 creates the object, it knows that only itself can access the object it just created. However when T2 is about to destroy the object, more than one thread has access to it. For T2 to do its job, it must somehow make sure other threads have stopped using the object. The mechanism can be</p><ol><li>A global shutdown signal that is sent to all threads (<code>shutdown_condvar</code>).</li><li>A shared pointer that assigns the duty of destroying an object to the last bearer of the object (<code>shared_ptr</code>).</li><li>A state of the object itself that denotes an invalid state (<code>weak_ptr</code>) so that T2 can destroy the object at any time.</li><li>A ref count included in the object itself, and a blocking mechanism to wait for that count to reach zero.</li></ol><p>My favorite approach is #4 because it is most universal, and has deterministic runtime behavior when compared with <code>shared_ptr</code>. We know upfront that T2 is the thread that destroys the object, not a latency sensitive thread or a thread that won't finish running a time consuming task in 10 minutes.</p><figure class="kg-card kg-image-card kg-card-hascaption"><img src="https://www.ditsing.com/content/images/2022/01/Destruction-And-Threads-first-1.png" class="kg-image" alt loading="lazy" width="1656" height="828" srcset="https://www.ditsing.com/content/images/size/w600/2022/01/Destruction-And-Threads-first-1.png 600w, https://www.ditsing.com/content/images/size/w1000/2022/01/Destruction-And-Threads-first-1.png 1000w, https://www.ditsing.com/content/images/size/w1600/2022/01/Destruction-And-Threads-first-1.png 1600w, https://www.ditsing.com/content/images/2022/01/Destruction-And-Threads-first-1.png 1656w" sizes="(min-width: 720px) 720px"><figcaption>Notify and Destroy</figcaption></figure><p>In this approach, T2 would usually need to let other threads know that they must give up the object. It could notify other threads by either changing a boolean that other threads are watching, or sending a message to all holders of the object. Then T2 must wait for the ref count to reach zero (or one if T2 itself is counted). After that it can safely destroy the object and release the memory.</p><p>The waiting part is unavoidable. T2 must release the memory, and no more than one thread can release the memory. Even if all operations before releasing the memory are thread safe, we still need to have one thread do the last thing, and that thread has to wait.</p><p>There is an alternative. We could just not release the memory at all. The object is safe to use all the way to the end of the process. This is the easiest thing to do, but does put pressure on memory usage.</p>
+			</section>
+
+			<section class="post-footer">
+
+				<div class="post-share">
+					<span class="post-info-label">Share</span>
+					<a title="Twitter" aria-label="Twitter" class="twitter" href="https://twitter.com/share?text=Destruction that works with multi-threads&url=https://www.ditsing.com/destruction-that-works-with-multi-threads/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+						<i class="icon icon-twitter" aria-hidden="true"></i>
+					</a>
+					<a title="Facebook" aria-label="Facebook" class="facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://www.ditsing.com/destruction-that-works-with-multi-threads/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+						<i class="icon icon-facebook" aria-hidden="true"></i>
+					</a>
+					<a title="LinkedIn" aria-label="LinkedIn" class="linkedin" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https://www.ditsing.com/destruction-that-works-with-multi-threads//&amp;title=Destruction that works with multi-threads" onclick="window.open(this.href, 'linkedin-share', 'width=930,height=720');return false;">
+						<i class="icon icon-linkedin" aria-hidden="true"></i>
+					</a>
+					<a title="Email" aria-label="Email" class="email" href="mailto:?subject=Destruction that works with multi-threads&amp;body=https://www.ditsing.com/destruction-that-works-with-multi-threads/">
+						<i class="icon icon-mail" aria-hidden="true"></i>
+					</a>
+				</div>
+
+
+			</section>
+
+
+			<section class="post-comments">
+				<a id="show-disqus" class="post-comments-activate">Show Comments</a>
+			   <div id="disqus_thread"></div>
+			</section>
+
+
+			<aside class="post-nav">
+
+
+					<a class="post-nav-prev" href="/doctype-changes-css-behavior/">
+						<section class="post-nav-teaser">
+							<i class="icon icon-arrow-right" aria-label="Previous post"></i>
+							<h2 class="post-nav-title">DOCTYPE changes CSS behavior</h2>
+							<p class="post-nav-excerpt">It seems CSS behaves differently with and without the DOCTYPE comment&hellip;</p>
+							<p class="post-nav-meta"><time datetime="27-09-2021">27 Sep 2021</time></p>
+						</section>
+					</a>
+				<div class="clear"></div>
+			</aside>
+
+		</div>
+	</article>
+</main>
+
+
+
+
+
+		<div class="search-wrapper">
+			<div class="search">
+		    <form class="search-form">
+          <input class="search-field" type="text" placeholder="Search …">
+          <button class="search-button" type="submit">
+						<i class="icon icon-search" aria-hidden="true"></i>
+					</button>
+		    </form>
+				<div class="popular-wrapper">
+					<h4 class="popular-title">Topics</h4>
+					<span class="popular-tags post-tags">
+								<a href='/tag/cn/'>中文: 2</a>
+								<a href='/tag/raft/'>Raft: 2</a>
+								<a href='/tag/lifetime/'>Lifetime: 2</a>
+								<a href='/tag/gong-zuo/'>工作: 1</a>
+					</span>
+				</div>
+				<div class="search-result"></div>
+			</div>
+			<button class="search-wrapper-close" aria-label="Close"></button>
+		</div>
+
+		<div class="nav-footer">
+			<nav class="nav-wrapper" aria-label="Footer">
+				<span class="nav-copy">顿 &copy; 2022  <a class="nav-rss" title="RSS" href="https://www.ditsing.com/rss/" target="_blank"><i class="icon icon-rss" aria-hidden="true"></i></a></span>
+				<span class="nav-credits">Published with <a href="https://ghost.org">Ghost</a> &bull; Theme <a href="https://github.com/zutrinken/attila">Attila</a> &bull; <a class="menu-item js-theme" href="#" data-system="System theme" data-dark="Dark theme" data-light="Light theme"><span class="theme-icon"></span><span class="theme-text">System theme</span> </a> </span>
+			</nav>
+		</div>
+
+	</section>
+
+	<script type="text/javascript" src="/assets/js/script.js?v=b23e0a0900"></script>
+
+	<script>
+  $(document).ready(function () {
+		var viewport = $(window);
+		var post = $('.post-content');
+		// Responsive videos with fitVids
+    post.fitVids();
+		// Format code blocks and add line numbers
+		function codestyling() {
+	    $('pre code').each(function(i, e) {
+				// Code highlight
+	      hljs.highlightBlock(e);
+	      // No lines for plain text blocks
+	      if (!$(this).hasClass('language-text')) {
+	        var code = $(this);
+					// Calculate amount of lines
+	        var lines = code.html().split(/\n(?!$)/g).length;
+	        var numbers = [];
+	        if (lines > 1) {
+	          lines++;
+	        }
+	        for (i = 1; i < lines; i++) {
+	          numbers += '<span class="line" aria-hidden="true">' + i + '</span>';
+	        }
+	        code.parent().append('<div class="lines">' + numbers + '</div>');
+	      }
+	    });
+	  }
+	  codestyling();
+		// Reading progress bar on window top
+	  function readingProgress() {
+			var postBottom = post.offset().top + post.height();
+			var viewportHeight = viewport.height();
+      var progress = 100 - (((postBottom - (viewport.scrollTop() + viewportHeight) + viewportHeight / 3) / (postBottom - viewportHeight + viewportHeight / 3)) * 100);
+      $('.progress-bar').css('width', progress + '%');
+      (progress > 100) ? $('.progress-container').addClass('complete'): $('.progress-container').removeClass('complete');
+	  }
+	  readingProgress();
+		// Trigger reading progress
+	  viewport.on({
+	    'scroll': function() {
+	      readingProgress();
+	    },
+	    'resize': function() {
+	      readingProgress();
+	    },
+	    'orientationchange': function() {
+	      readingProgress();
+	    }
+	  });
+
+  });
+</script>
+
+
+	
+
+</body>
+</html>

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+	<title>Raft, from an engineering perspective</title>
+	<meta name="HandheldFriendly" content="True" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<link rel="stylesheet" type="text/css" href="/assets/css/style.css?v=b23e0a0900" />
+
+	<script>
+			var siteUrl = 'https://www.ditsing.com';
+	</script>
+
+	<script>
+			var localTheme = localStorage.getItem('attila_theme');
+			switch (localTheme) {
+					case 'dark':
+							document.documentElement.classList.add('theme-dark');
+							break;
+					case 'light':
+							document.documentElement.classList.add('theme-light');
+							break;
+					default:
+							break;
+			}
+	</script>
+
+
+
+			<style>
+				.theme-dark:root {
+				  --ghost-accent-color: #ff6633;
+				}
+				@media (prefers-color-scheme: dark) {
+				  html:not(.theme-light):root {
+				    --ghost-accent-color: #ff6633;
+				  }
+				}
+			</style>
+
+	<link rel="icon" href="/favicon.png" type="image/png" />
+    <link rel="canonical" href="https://www.ditsing.com/raft-from-an-engineering-perspective/" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    <link rel="amphtml" href="https://www.ditsing.com/raft-from-an-engineering-perspective/amp/" />
+    
+    <meta property="og:site_name" content="顿" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Raft, from an engineering perspective" />
+    <meta property="og:description" content="I recently completed an implementation of the Raft consensus algorithm! It is part of the homework of the online version of MIT course 6.824. It took me 10 months on and off, mostly off. The algorithm itself is simple and understandable, as promised by the paper. I&#x27;d like to" />
+    <meta property="og:url" content="https://www.ditsing.com/raft-from-an-engineering-perspective/" />
+    <meta property="og:image" content="https://www.ditsing.com/content/images/2020/12/annie-solo.png" />
+    <meta property="article:published_time" content="2020-08-16T15:20:00.000Z" />
+    <meta property="article:modified_time" content="2020-12-24T16:37:57.000Z" />
+    <meta property="article:tag" content="Raft" />
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Raft, from an engineering perspective" />
+    <meta name="twitter:description" content="I recently completed an implementation of the Raft consensus algorithm! It is part of the homework of the online version of MIT course 6.824. It took me 10 months on and off, mostly off. The algorithm itself is simple and understandable, as promised by the paper. I&#x27;d like to" />
+    <meta name="twitter:url" content="https://www.ditsing.com/raft-from-an-engineering-perspective/" />
+    <meta name="twitter:image" content="https://www.ditsing.com/content/images/2020/12/annie-solo.png" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Jing Yang 杨靖" />
+    <meta name="twitter:label2" content="Filed under" />
+    <meta name="twitter:data2" content="Raft" />
+    <meta name="twitter:site" content="@dytsing" />
+    <meta property="og:image:width" content="2465" />
+    <meta property="og:image:height" content="2346" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "顿",
+        "url": "https://www.ditsing.com/",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://www.ditsing.com/content/images/2021/01/hammer_transparent.png"
+        }
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Jing Yang 杨靖",
+        "url": "https://www.ditsing.com/author/ditsing/",
+        "sameAs": []
+    },
+    "headline": "Raft, from an engineering perspective",
+    "url": "https://www.ditsing.com/raft-from-an-engineering-perspective/",
+    "datePublished": "2020-08-16T15:20:00.000Z",
+    "dateModified": "2020-12-24T16:37:57.000Z",
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://www.ditsing.com/content/images/2020/12/annie-solo.png",
+        "width": 2465,
+        "height": 2346
+    },
+    "keywords": "Raft",
+    "description": "I recently completed an implementation of the Raft consensus algorithm! It is\npart of the homework of the online version of MIT course 6.824\n[https://pdos.csail.mit.edu/6.824/]. It took me 10 months on and off, mostly\noff.\n\nThe algorithm itself is simple and understandable, as promised by the paper\n[https://raft.github.io/raft.pdf]. I&#x27;d like to summarize my implementation, and\nshare my experience as an engineer implementing it. I wholeheartedly trust the\nresearchers on its correctness. The progr",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://www.ditsing.com/"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 4.47" />
+    <link rel="alternate" type="application/rss+xml" title="顿" href="https://www.ditsing.com/rss/" />
+    
+    <script defer src="/public/cards.min.js?v=b23e0a0900"></script><style>:root {--ghost-accent-color: #15171A;}</style>
+    <link rel="stylesheet" type="text/css" href="/public/cards.min.css?v=b23e0a0900">
+</head>
+
+<body class="post-template tag-raft">
+
+	<div class="nav-header">
+		<nav class="nav-wrapper" aria-label="Main">
+				<span class="logo">
+					<a href="https://www.ditsing.com" title="Home"><img src="https://www.ditsing.com/content/images/2021/01/hammer_transparent.png" alt="Logo" /></a>
+				</span>
+				<ul>
+		<li class="nav-home"><a href="https://www.ditsing.com/"><span>Home</span></a></li>
+		<li class="nav-the-author"><a href="https://www.ditsing.com/author/"><span>The Author</span></a></li>
+		<li class="nav-zhong-wen"><a href="https://www.ditsing.com/tag/cn/"><span>中文</span></a></li>
+		<li class="nav-jian-zheng"><a href="https://www.ditsing.com/tag/jian-zheng/"><span>键政</span></a></li>
+		<li class="nav-guan-yu"><a href="https://www.ditsing.com/about-me/"><span>关于</span></a></li>
+		<li class="nav-jiu-bo"><a href="http://old.ditsing.com"><span>旧博</span></a></li>
+</ul>
+
+				<ul class="nav-meta">
+  <li class="nav-twitter">
+    <a aria-label="Twitter" href="https://twitter.com/dytsing" title="@dytsing" target="_blank">
+      <i class="icon icon-twitter" aria-hidden="true"></i>
+      <span>@dytsing</span>
+    </a>
+  </li>
+  <li class="nav-github">
+    <a aria-label="GitHub" href="https://github.com/ditsing" title="" target="_blank">
+      <i class="icon icon-github" aria-hidden="true"></i>
+      <span></span>
+    </a>
+  </li>
+  <li class="nav-search" style="display: none;">
+    <a title="Search">
+      <i class="icon icon-search" aria-hidden="true"></i>
+      <span>Search</span>
+    </a>
+  </li>
+  <li class="nav-rss">
+    <a title="RSS" href="https://www.ditsing.com/rss/" target="_blank">
+      <i class="icon icon-rss" aria-hidden="true"></i>
+    </a>
+  </li>
+  <!--
+    <li class="nav-subscribe">
+      <a href="#/portal">Subscribe</a>
+    </li>
+  -->
+</ul>
+		</nav>
+
+		<div class="nav-wrapper-control">
+			<div class="inner">
+				<a class="nav-menu" role="button"><i class="icon icon-menu" aria-hidden="true"></i>Menu</a>
+				<a class="nav-search" style="display: none;" title="Search" role="button"><i class="icon icon-search" aria-hidden="true"></i></a>
+			</div>
+		</div>
+	</div>
+	<div class="nav-close" role="button" aria-label="Close"></div>
+
+	<section class="page-wrapper">
+
+		
+
+<div class="progress-container">
+	<span class="progress-bar"></span>
+</div>
+
+<header class="post-header  has-cover ">
+	<div class="inner">
+		<span class="post-info">
+			<span class="post-type">Article</span>
+			<span class="post-count">Raft</span>
+		</span>
+		<h1 class="post-title">Raft, from an engineering perspective</h1>
+		<div class="post-meta">
+			<div class="post-meta-avatars">
+					<figure class="post-meta-avatar avatar">
+					</figure>
+			</div>
+			<h4 class="post-meta-author"><a href="/author/ditsing/">Jing Yang 杨靖</a></h4>
+			<time datetime="16-08-2020">16 Aug 2020</time> &bull; 6 min read
+		</div>
+		<div class="post-cover cover">
+			<img
+			srcset="/content/images/size/w320/2020/12/annie-solo.png 320w,
+              /content/images/size/w640/2020/12/annie-solo.png 640w,
+              /content/images/size/w960/2020/12/annie-solo.png 960w,
+              /content/images/size/w1920/2020/12/annie-solo.png 1920w"
+      src="/content/images/size/w1920/2020/12/annie-solo.png"
+			alt="Raft, from an engineering perspective" />
+		</div>
+	</div>
+</header>
+
+<main class="content" role="main">
+	<article class="post tag-raft featured">
+		<div class="inner">
+
+			<section class="post-content">
+				<p>I recently completed an implementation of the Raft consensus algorithm! It is part of the homework of the online version of <a href="https://pdos.csail.mit.edu/6.824/">MIT course 6.824</a>. It took me 10 months on and off, mostly off.</p><p>The algorithm itself is simple and understandable, as promised by the <a href="https://raft.github.io/raft.pdf">paper</a>. I'd like to summarize my implementation, and share my experience as an engineer implementing it. I wholeheartedly trust the researchers on its correctness. The programming language I used, as required by 6.824, is Go.</p><h2 id="raft">Raft</h2><p>Raft stores a replicated log and allows users to add new log entries. Once a log entry is committed, it will stay in the committed state, and survive power outages, server reboots and network failures.</p><p>In practice, Raft keeps the log distributed between a set of servers. One of the servers is elected as the leader, and the rest are followers. The leader is responsible for serving external users, and keeping followers up-to-date on the logs. When the leader dies, a follower can turn into the leader and keep the system running.</p><h2 id="core-states">Core States</h2><p>In the implementation, a list of core states are maintained on each server. The states include the current leader, the log entries, the committed log entries, the last term and last vote, the time to start an election, and other logistic information. On each server, the states are guarded by a global lock. Details are <a href="https://dun.ditsing.com/assets/raft/States.png">here</a>.</p><p>The states on each server are synchronized via two RPCs, <code>AppendEntries</code> and <code>RequestVote</code>. We'll discuss those shortly. RPCs (remote procedure calls) are requests and responses sent and received over the network. It is different from function calls and inter-process communication, in the sense that the latency is higher and RPCs could fail arbitrarily because of I/O.</p><p>Looking back at my implementation, I divided Raft into 5 components.</p><h2 id="election-and-voting">Election and Voting</h2><p>Responsible for electing a leader to run the system. Arguably the most important part of Raft.</p><p>An election is triggered by a timer. When a follower has not heard from a leader for some time, it starts an election. The follower sends one <code>RequestVote</code> RPC to each of the peers, asking for a vote. If it collects enough votes before someone else starts a new term, then it becomes the new leader. To avoid unnecessary leader changes, the timer will be reset every time a follower hears from the current leader.</p><figure class="kg-card kg-image-card"><img src="https://www.ditsing.com/content/images/2020/12/Election.png" class="kg-image" alt loading="lazy" width="812" height="730" srcset="https://www.ditsing.com/content/images/size/w600/2020/12/Election.png 600w, https://www.ditsing.com/content/images/2020/12/Election.png 812w" sizes="(min-width: 720px) 720px"></figure><p>Asynchronous operations can lead to many pitfalls. Firstly, If an election is triggered by a timer, we could have a second election triggered when the first is still running. In my implementation, I made an effort to end the prior election before starting a new one. This reduces the noise in the log and simplifies the states that must be considered. It is still possible to code it in a way in which each election dies naturally, though.</p><p>Secondly, latency matters in an unreliable network. A candidate should count votes ASAP when it receives responses from peers, and a newly-elected leader must notify its peers ASAP that it has collected enough votes. Using a channel in those scenarios can introduce significant delays, to the point that elections could not be reliably completed within the usual limit of 150ms ~ 250ms.</p><p>Thirdly, when the system is shut down, an election should be ended as well. Hanging elections confuses peers, and more importantly, also confuses the testing framework of 6.824 that evaluates my implementation.</p><h2 id="heartbeats">Heartbeats</h2><p>To ensure that followers know the leader is still alive and functioning, the current leader sends heartbeats to followers. Heartbeats keep the system stable. Followers will not attempt to become a leader while they receive heartbeats. Heartbeats are triggered by the heartbeat timer, which should expire faster than any followers' election timer. Otherwise those followers will attempt to run an election before the leader sends out the heartbeat.</p><p>In my implementation, one "daemon" goroutine is created for each peer, with its own periodical timer. The advantage of this design is that peers are isolated from each other, so that one lagging peer won't interfere with other peers.</p><p>The leader also sends an immediate round of heartbeats after it has won an election. This round of RPCs is implemented as a special case. It does not even share code with the periodical version.</p><p>The Raft paper did not design a specific type of RPC for heartbeats. Instead, it uses an <code>AppendEntries</code> RPC with no entries to append. The original purpose of <code>AppendEntries</code> is to sync log entries.</p><h2 id="log-entry-syncing">Log Entry Syncing</h2><p>The leader is responsible for keeping all followers on the same page, by sending out <code>AppendEntries</code> RPCs.</p><p>Unlike heartbeats, log entry syncing is (mainly) triggered by events. Whenever a new log entry is added by a client, the leader needs to replicate it to followers. When things run smoothly, a majority of the followers accept the new log entry. We can then call that entry "committed". However, because of server crashes and network failures, sometimes followers disagree with the leader. The leader needs to go back in the entry log, find the latest entry that they still agree on ("common ground"), and overwrite all entries after that.</p><figure class="kg-card kg-image-card"><img src="https://www.ditsing.com/content/images/2020/12/Sync.png" class="kg-image" alt loading="lazy" width="936" height="668" srcset="https://www.ditsing.com/content/images/size/w600/2020/12/Sync.png 600w, https://www.ditsing.com/content/images/2020/12/Sync.png 936w" sizes="(min-width: 720px) 720px"></figure><p>Finding "common ground" is hard. In my implementation this is a recursive call to the same <code>tryAppendEntries</code> function. The function sends an <code>AppendEntries</code> RPC and collects the response. In case of a disagreement, it backtracks up the log entry list exponentially. First it goes back <code>1</code> entry, then <code>X</code> entries, then <code>X^2</code> entries and so on. The recursion will not go too deep because of the aggressive "backtrack" behavior. This does mean a lot of the entries will be sent over the network repeatedly, which is less efficient.</p><p>The aggressive backtrack behavior is mainly designed for the limits set by the testing framework. In some extreme tests, an RPC can be delayed by as much as 25ms, or be dropped randomly, or never return. The network is heavily clogged. An election is bound to start in about 150ms after a leader has won, when heartbeat RPCs fail and one of the election timers triggers. That means the current leader only has ~6 RPCs (150ms / 25ms) to communicate with each peer, fewer if some RPCs are randomly lost in the network. The "backtrack" function really needs to go from 1000 to 0 in less than 6 calls. I imagine it will be tuned very differently, if the 95 percentile RPC latency to the same cell is less than 5ms.</p><p><code>AppendEntries</code> RPC are so important that they must also be monitored by a timer. In some RPC libraries, an RPC can fail with a timeout error, and the timeout can be set by the caller. Unfortunately <code>labrpc.go</code> that comes with 6.824 does not provide such a nice feature. I implemented the timer as part of the Heartbeat component, which checks the status of log sync before sending out heartbeats. If logs are not in sync, <code>tryAppendEntries</code> RPCs are triggered instead of heartbeats.</p><p>Like heartbeats, each peer should have its own 'daemon' goroutine that is in charge of log syncing. The heartbeat daemon could share the same goroutine with it. However I did not find a way to wait for both a ticking timer and an event channel at the same time. Let me know if you know how to do that! Another thing is that my obsolete "all peers bundled together" system worked good enough. I did not bother to upgrade.</p><h2 id="internal-rpc-serving">Internal RPC Serving</h2><p>We talked about how to send <code>AppendEntries</code> and <code>RequestVote</code> RPCs. But how are those RPCs answered?</p><p>The Raft protocol is designed in a way that the answer can be given just by looking at a snapshot of the core states of the receiving peer. There is no waiting required, except for grabbing the lock local to each peer. The only twist is that receiving those two RPC calls can result in a change of core states. If other components are designed to expect state change at any time, there is nothing to worry about.</p><h2 id="external-rpc-serving">External RPC Serving</h2><p>Only the leader serves external clients. Each peer should forward "start a new log entry" requests to the current leader. This part is not required by 6.824 and not implemented.</p><p>In reality, clients should communicate with the system via RPCs. Just like internal RPC serving, the implementation should be straightforward.</p><p>The 6.824 testing framework also requires each peer to send a notification via a given Go channel, when a log entry is committed. I don't think this requirement applies to a real world scenario. This part is implemented as one daemon goroutine on each peer. It is made asynchronous because it communicates with external systems which might be arbitrarily slow. No RPC is involved.</p><h2 id="conclusion">Conclusion</h2><p>Coding is fun. Writing asynchronous applications is fun. Raft is fun.</p><p>That concludes the summary. Stay tuned for my thoughts and comments!</p>
+			</section>
+
+			<section class="post-footer">
+
+				<div class="post-share">
+					<span class="post-info-label">Share</span>
+					<a title="Twitter" aria-label="Twitter" class="twitter" href="https://twitter.com/share?text=Raft, from an engineering perspective&url=https://www.ditsing.com/raft-from-an-engineering-perspective/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+						<i class="icon icon-twitter" aria-hidden="true"></i>
+					</a>
+					<a title="Facebook" aria-label="Facebook" class="facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://www.ditsing.com/raft-from-an-engineering-perspective/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+						<i class="icon icon-facebook" aria-hidden="true"></i>
+					</a>
+					<a title="LinkedIn" aria-label="LinkedIn" class="linkedin" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https://www.ditsing.com/raft-from-an-engineering-perspective//&amp;title=Raft, from an engineering perspective" onclick="window.open(this.href, 'linkedin-share', 'width=930,height=720');return false;">
+						<i class="icon icon-linkedin" aria-hidden="true"></i>
+					</a>
+					<a title="Email" aria-label="Email" class="email" href="mailto:?subject=Raft, from an engineering perspective&amp;body=https://www.ditsing.com/raft-from-an-engineering-perspective/">
+						<i class="icon icon-mail" aria-hidden="true"></i>
+					</a>
+				</div>
+
+				<aside class="post-tags">
+					<span class="post-info-label">Topic</span>
+					<a href="/tag/raft/">Raft</a>
+				</aside>
+
+			</section>
+
+
+			<section class="post-comments">
+				<a id="show-disqus" class="post-comments-activate">Show Comments</a>
+			   <div id="disqus_thread"></div>
+			</section>
+
+
+			<aside class="post-nav">
+
+					<a class="post-nav-next" href="/implementing-raft-with-go/">
+						<section class="post-nav-teaser">
+							<i class="icon icon-arrow-left" aria-label="Next post"></i>
+							<h2 class="post-nav-title">Implementing Raft with Go</h2>
+							<p class="post-nav-excerpt">Following my previous post Raft, from an engineering perspective, I gathered some&hellip;</p>
+							<p class="post-nav-meta"><time datetime="23-08-2020">23 Aug 2020</time></p>
+						</section>
+					</a>
+
+					<a class="post-nav-prev" href="/wen-hua-bu-gua/">
+						<section class="post-nav-teaser">
+							<i class="icon icon-arrow-right" aria-label="Previous post"></i>
+							<h2 class="post-nav-title">文化不适</h2>
+							<p class="post-nav-excerpt">标题是从 Culture Fit 生硬翻译过来的。&hellip;</p>
+							<p class="post-nav-meta"><time datetime="15-08-2020">15 Aug 2020</time></p>
+						</section>
+					</a>
+				<div class="clear"></div>
+			</aside>
+
+		</div>
+	</article>
+</main>
+
+
+
+
+
+		<div class="search-wrapper">
+			<div class="search">
+		    <form class="search-form">
+          <input class="search-field" type="text" placeholder="Search …">
+          <button class="search-button" type="submit">
+						<i class="icon icon-search" aria-hidden="true"></i>
+					</button>
+		    </form>
+				<div class="popular-wrapper">
+					<h4 class="popular-title">Topics</h4>
+					<span class="popular-tags post-tags">
+								<a href='/tag/cn/'>中文: 2</a>
+								<a href='/tag/raft/'>Raft: 2</a>
+								<a href='/tag/lifetime/'>Lifetime: 2</a>
+								<a href='/tag/gong-zuo/'>工作: 1</a>
+					</span>
+				</div>
+				<div class="search-result"></div>
+			</div>
+			<button class="search-wrapper-close" aria-label="Close"></button>
+		</div>
+
+		<div class="nav-footer">
+			<nav class="nav-wrapper" aria-label="Footer">
+				<span class="nav-copy">顿 &copy; 2022  <a class="nav-rss" title="RSS" href="https://www.ditsing.com/rss/" target="_blank"><i class="icon icon-rss" aria-hidden="true"></i></a></span>
+				<span class="nav-credits">Published with <a href="https://ghost.org">Ghost</a> &bull; Theme <a href="https://github.com/zutrinken/attila">Attila</a> &bull; <a class="menu-item js-theme" href="#" data-system="System theme" data-dark="Dark theme" data-light="Light theme"><span class="theme-icon"></span><span class="theme-text">System theme</span> </a> </span>
+			</nav>
+		</div>
+
+	</section>
+
+	<script type="text/javascript" src="/assets/js/script.js?v=b23e0a0900"></script>
+
+	<script>
+  $(document).ready(function () {
+		var viewport = $(window);
+		var post = $('.post-content');
+		// Responsive videos with fitVids
+    post.fitVids();
+		// Format code blocks and add line numbers
+		function codestyling() {
+	    $('pre code').each(function(i, e) {
+				// Code highlight
+	      hljs.highlightBlock(e);
+	      // No lines for plain text blocks
+	      if (!$(this).hasClass('language-text')) {
+	        var code = $(this);
+					// Calculate amount of lines
+	        var lines = code.html().split(/\n(?!$)/g).length;
+	        var numbers = [];
+	        if (lines > 1) {
+	          lines++;
+	        }
+	        for (i = 1; i < lines; i++) {
+	          numbers += '<span class="line" aria-hidden="true">' + i + '</span>';
+	        }
+	        code.parent().append('<div class="lines">' + numbers + '</div>');
+	      }
+	    });
+	  }
+	  codestyling();
+		// Reading progress bar on window top
+	  function readingProgress() {
+			var postBottom = post.offset().top + post.height();
+			var viewportHeight = viewport.height();
+      var progress = 100 - (((postBottom - (viewport.scrollTop() + viewportHeight) + viewportHeight / 3) / (postBottom - viewportHeight + viewportHeight / 3)) * 100);
+      $('.progress-bar').css('width', progress + '%');
+      (progress > 100) ? $('.progress-container').addClass('complete'): $('.progress-container').removeClass('complete');
+	  }
+	  readingProgress();
+		// Trigger reading progress
+	  viewport.on({
+	    'scroll': function() {
+	      readingProgress();
+	    },
+	    'resize': function() {
+	      readingProgress();
+	    },
+	    'orientationchange': function() {
+	      readingProgress();
+	    }
+	  });
+
+  });
+</script>
+
+
+	
+
+</body>
+</html>
